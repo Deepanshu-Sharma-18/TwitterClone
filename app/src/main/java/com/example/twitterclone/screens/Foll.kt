@@ -72,9 +72,32 @@ fun FollowList(mainViewModel: MainViewModel, navController: NavController) {
                 LazyColumn(content = {
                     items(follow!!.documents.size) {
                         Spacer(modifier = Modifier.height(5.dp))
-                        UserCard(result = follow!!.documents[it].data!!)
+                        val result by mainViewModel.getUser(follow!!.documents[it].id)
+                            .collectAsState(initial = null)
+
+                        if (result == null) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .background(color = Color.White),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(60.dp),
+                                    color = Color(0xff1DA1F2)
+                                )
+                            }
+                        } else {
+
+
+                            UserCard(result!!)
+
+                        }
                     }
-                }, modifier = Modifier.fillMaxWidth())
+
+                }, modifier = Modifier.fillMaxWidth().height(400.dp))
                 Spacer(modifier = Modifier.height(40.dp))
             }
 
