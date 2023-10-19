@@ -18,13 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.MailOutline
-import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -32,24 +25,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -58,7 +44,7 @@ import com.example.twitterclone.R
 import com.example.twitterclone.components.TweetCard
 import com.example.twitterclone.provider.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
-import com.example.twitterclone.utils.Screens
+import com.example.twitterclone.Navigation.Screens
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

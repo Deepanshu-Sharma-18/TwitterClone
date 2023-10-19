@@ -1,4 +1,4 @@
-package com.example.twitterclone.utils
+package com.example.twitterclone.Navigation
 
 enum class Screens {
     SignIN,

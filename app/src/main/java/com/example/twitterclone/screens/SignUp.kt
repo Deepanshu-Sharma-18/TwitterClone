@@ -1,7 +1,6 @@
 package com.example.twitterclone.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,39 +11,39 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.twitterclone.R
 import com.example.twitterclone.provider.AuthViewModel
-import com.example.twitterclone.utils.Screens
+import com.example.twitterclone.Navigation.Screens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -92,7 +91,6 @@ fun SignUp(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(60.dp)
-
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -100,10 +98,11 @@ fun SignUp(
             Text(
                 text = "Create New Account",
                 fontSize = 35.sp,
-                fontWeight = FontWeight.W500,
+                fontWeight = FontWeight.W400,
+                color = MaterialTheme.colorScheme.secondary,
 
                 )
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
 
             OutlinedTextField(
                 value = userId.value,
@@ -113,7 +112,17 @@ fun SignUp(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.Transparent,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    textColor = MaterialTheme.colorScheme.secondary,
+                    focusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                )
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -126,7 +135,17 @@ fun SignUp(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.Transparent,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    textColor = MaterialTheme.colorScheme.secondary,
+                    focusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                )
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -140,7 +159,17 @@ fun SignUp(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.Transparent,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    textColor = MaterialTheme.colorScheme.secondary,
+                    focusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                )
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -154,7 +183,17 @@ fun SignUp(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.Transparent,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    cursorColor = MaterialTheme.colorScheme.secondary,
+                    textColor = MaterialTheme.colorScheme.secondary,
+                    focusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                )
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -174,7 +213,14 @@ fun SignUp(
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text(text = "SignUp")
+                Text(
+                    text = "Create Account",
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.W400,
+                        color = Color.White
+                    )
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -182,7 +228,15 @@ fun SignUp(
             TextButton(
                 onClick = { navController.navigate(Screens.SignIN.name) }
             ) {
-                Text(text = "Already have an account? Sign In")
+                Text(
+                    text = "Already have an account? Sign In",
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.W500,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+
             }
 
         }

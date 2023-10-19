@@ -1,7 +1,6 @@
 package com.example.twitterclone.components
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +42,7 @@ import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.provider.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
-import com.example.twitterclone.utils.Screens
+import com.example.twitterclone.Navigation.Screens
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

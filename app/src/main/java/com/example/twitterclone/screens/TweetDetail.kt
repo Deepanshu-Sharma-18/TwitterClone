@@ -2,7 +2,6 @@ package com.example.twitterclone.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
-import java.util.Date
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +20,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -44,12 +41,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
@@ -57,12 +52,9 @@ import com.example.twitterclone.components.CommentsCard
 import com.example.twitterclone.components.VideoPlayer
 import com.example.twitterclone.provider.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
-import com.example.twitterclone.utils.Screens
-import com.example.twitterclone.utils.formatTimestamp
+import com.example.twitterclone.Navigation.Screens
 import com.google.firebase.Timestamp
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 
 @SuppressLint(

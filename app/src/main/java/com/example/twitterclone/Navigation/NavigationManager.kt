@@ -1,4 +1,4 @@
-package com.example.twitterclone.utils
+package com.example.twitterclone.Navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -54,7 +54,8 @@ fun NavigationManager() {
         composable(Screens.SignUp.name) {
             SignUp(navController = navController, authViewModel = authViewModel)
         }
-        composable(Screens.SearchProfileScreen.name+"/{documentId}" ,
+        composable(
+            Screens.SearchProfileScreen.name+"/{documentId}" ,
             arguments = listOf(navArgument("documentId"){
                 type = NavType.StringType
             })
