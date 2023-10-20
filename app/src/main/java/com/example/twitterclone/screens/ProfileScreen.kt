@@ -45,7 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.ui.theme.RalewayFontFamily
 import com.example.twitterclone.Navigation.Screens

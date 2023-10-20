@@ -50,7 +50,7 @@ import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.components.CommentsCard
 import com.example.twitterclone.components.VideoPlayer
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import com.google.firebase.Timestamp

@@ -1,7 +1,8 @@
-package com.example.twitterclone.screens
+package com.example.twitterclone.screens.Authentication.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,14 +43,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.Navigation.Screens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SignUp(
-    authViewModel: AuthViewModel ,
+    authViewModel: AuthViewModel,
     navController: NavController
 ) {
 
@@ -70,6 +71,9 @@ fun SignUp(
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
 
 
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -77,7 +81,7 @@ fun SignUp(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(20.dp)
-            .clickable {
+            .clickable (interactionSource = interactionSource , indication = null) {
                 keyboardController?.hide()
                 focusManager.clearFocus()
             },

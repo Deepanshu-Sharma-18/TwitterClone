@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,7 +43,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -164,7 +165,8 @@ fun HomeScreen(
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.home),
                                 contentDescription = "home",
-                                modifier = Modifier.size(23.dp)
+                                modifier = Modifier
+                                    .size(23.dp)
                                     .clickable {
                                         navController.navigate(Screens.HomeScreen.name)
                                     },
@@ -206,7 +208,7 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = Color.White),
+                        .background(color = MaterialTheme.colorScheme.tertiary),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -221,7 +223,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
-                        .background(color = Color.White)
+                        .background(color =  MaterialTheme.colorScheme.tertiary)
                         .padding(top = 60.dp, start = 3.dp, bottom = 60.dp)
                 ) {
 

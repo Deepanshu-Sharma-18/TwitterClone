@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
@@ -66,7 +67,7 @@ fun TweetCard(
             modifier = Modifier
                 .fillMaxSize()
                 .height(400.dp)
-                .background(color = Color.White),
+                .background(color =  MaterialTheme.colorScheme.tertiary),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -91,12 +92,12 @@ fun TweetCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .background(color = Color.White),
+                        .background(color =  MaterialTheme.colorScheme.tertiary),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2)
+                        modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -122,7 +123,7 @@ fun TweetCard(
                                 .clickable {
                                     navController.navigate(Screens.TweetDetail.name + "/$documentId")
                                 }
-                                .background(color = Color.White)
+                                .background(color =  MaterialTheme.colorScheme.tertiary)
                                 .padding(vertical = 0.dp),
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Top) {

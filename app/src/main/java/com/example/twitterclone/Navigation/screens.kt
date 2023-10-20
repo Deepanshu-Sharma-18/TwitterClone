@@ -13,5 +13,6 @@ enum class Screens {
     CommentScreen,
     SearchProfileScreen,
     Followers,
-    Following
+    Following,
+    ForgotPassword
 }

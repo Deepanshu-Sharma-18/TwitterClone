@@ -8,20 +8,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.twitterclone.provider.AuthViewModel
+import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.screens.CreateComment
-import com.example.twitterclone.screens.CreateTweet
+import com.example.twitterclone.screens.createTweet.CreateTweet
 import com.example.twitterclone.screens.EditProfile
 import com.example.twitterclone.screens.FollowList
 import com.example.twitterclone.screens.FollowingList
+import com.example.twitterclone.screens.Authentication.ui.ForgotPasswordScreen
 import com.example.twitterclone.screens.HomeScreen
 
 import com.example.twitterclone.screens.ProfileScreen
 import com.example.twitterclone.screens.SearchProfileScreen
 import com.example.twitterclone.screens.SearchScreen
-import com.example.twitterclone.screens.SignInScreen
-import com.example.twitterclone.screens.SignUp
+import com.example.twitterclone.screens.Authentication.ui.SignInScreen
+import com.example.twitterclone.screens.Authentication.ui.SignUp
 import com.example.twitterclone.screens.TweetDetail
 
 @Composable
@@ -107,6 +108,11 @@ fun NavigationManager() {
 
             FollowingList(mainViewModel = mainViewModel, navController = navController)
         }
+
+        composable(Screens.ForgotPassword.name){
+            ForgotPasswordScreen(navController , authViewModel)
+        }
+
 
 
 

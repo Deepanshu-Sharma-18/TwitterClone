@@ -58,7 +58,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 Log.d("DATAPROFILE", "Error getting documents.", exception)
 
             }
-
     }
 
     fun postTweet(content: String?, mediaUri: Uri?, isImage: Boolean) {
@@ -389,23 +388,18 @@ class MainViewModel @Inject constructor() : ViewModel() {
         val followedTweets = mutableListOf<String>()
         followedTweets.add(data.value!!["userId"].toString())
 
-
         if (following.value != null) {
             for (doc in following.value!!.documents) {
                 followedTweets.add(doc.data!!["userId"].toString())
             }
-
         }
-
 
         val tweetsRef = store.collection("tweets")
             .orderBy("timestamp" , Query.Direction.ASCENDING)
             .whereIn("userId", followedTweets)
             .snapshots()
 
-
         return tweetsRef
-
     }
 
     suspend fun searchUserExist(userId: String): String? {

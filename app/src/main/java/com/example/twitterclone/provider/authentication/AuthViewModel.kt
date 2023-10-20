@@ -1,4 +1,4 @@
-package com.example.twitterclone.provider
+package com.example.twitterclone.provider.authentication
 
 import android.content.ContentValues
 import android.content.ContentValues.TAG
@@ -98,6 +98,11 @@ class AuthViewModel @Inject constructor() : ViewModel() {
         auth.signOut()
         currentuser = auth.currentUser
         navController.navigate(Screens.SignIN.name)
+    }
+
+    fun sendPasswordReset(email : String , ctx : Context){
+        auth.sendPasswordResetEmail(email)
+        Toast.makeText(ctx ,"Reset password link sent to the above mail" , Toast.LENGTH_SHORT).show()
     }
 
     fun updatedetails(navController: NavController,name : String){
