@@ -31,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -79,11 +80,11 @@ fun EditProfile(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     } else {
 
@@ -110,7 +111,7 @@ fun EditProfile(
                     Text(
                         text = "Back",
                         fontSize = 20.sp,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.W400,
                         modifier = Modifier.padding(start = 15.dp)
                     )
@@ -119,7 +120,7 @@ fun EditProfile(
                     Icon(
                         imageVector = Icons.Rounded.ArrowBack,
                         contentDescription = "iconback",
-                        tint = Color.Black,
+                        tint =MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
                             .size(25.dp)
                             .clickable {
@@ -127,7 +128,7 @@ fun EditProfile(
                             })
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
 
             )
@@ -139,7 +140,7 @@ fun EditProfile(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .background(
-                        Color.White
+                        MaterialTheme.colorScheme.background
                     )
                     .padding(horizontal = 15.dp, vertical = 50.dp)
             ) {
@@ -147,7 +148,7 @@ fun EditProfile(
                 Text(
                     text = "Edit Profile",
                     fontWeight = FontWeight.W700,
-                    color = Color(0xff14171A),
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 25.sp,
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
@@ -157,13 +158,13 @@ fun EditProfile(
                     value = name.value,
                     textStyle = TextStyle(
                         fontWeight = FontWeight.W400,
-                        color = Color(0xff14171A),
+                        color = MaterialTheme.colorScheme.secondary,
                         fontSize = 20.sp,
                     ),
                     onValueChange = { name.value = it },
                     label = { Text(text = "Name" ,
                         fontWeight = FontWeight.W400,
-                        color = Color(0xff14171A),
+                        color = MaterialTheme.colorScheme.secondary,
                         fontSize = 13.sp,
                     ) },
                     keyboardOptions = KeyboardOptions(
@@ -176,7 +177,7 @@ fun EditProfile(
                 Text(
                     text = "Profile pic",
                     fontWeight = FontWeight.W600,
-                    color = Color(0xff14171A),
+                    color = MaterialTheme.colorScheme.secondary,
                     fontSize = 25.sp,
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
@@ -227,11 +228,11 @@ fun EditProfile(
                 Text(
                     text = "Bio",
                     fontWeight = FontWeight.W600,
-                    color = Color(0xff14171A),
+                    color =MaterialTheme.colorScheme.secondary,
                     fontSize = 25.sp,
                     modifier = Modifier.padding(horizontal = 15.dp)
                 )
-                TextField(
+                OutlinedTextField(
                     value = bio.value,
                     onValueChange = {
                         bio.value = it
@@ -241,13 +242,13 @@ fun EditProfile(
                             text = "Bio",
                             fontSize = 25.sp,
                             fontWeight = FontWeight.W400,
-                            color = Color(0xffAAB8C2)
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     },
                     textStyle = TextStyle(
                         fontWeight = FontWeight.W400,
                         fontSize = 18.sp,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.secondary
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -255,10 +256,10 @@ fun EditProfile(
                         .padding(top = 10.dp, start = 25.dp),
                     maxLines = 5,
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFF0EEEE)
-                        , focusedIndicatorColor = Color.Blue,
-                        unfocusedIndicatorColor = Color.Blue,
-                        disabledIndicatorColor = Color.Blue,
+                        containerColor = MaterialTheme.colorScheme.background
+                        , focusedIndicatorColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.secondary,
                         cursorColor = Color(0xff1DA1F2)
                     ),
                 )
@@ -270,14 +271,14 @@ fun EditProfile(
                             mainViewModel.getProfile()
                             navController.popBackStack()
                         }, modifier = Modifier
-                            .width(250.dp)
+                            .width(230.dp)
                             .clip(
                                 RoundedCornerShape(corner = CornerSize(0.dp))
-                            ), colors = ButtonDefaults.buttonColors(containerColor = Color(0xff1DA1F2))
+                            ), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Text(
                             text = "Save",
-                            fontSize = 25.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.W400,
                             color = Color(0xFFFFFFFF)
                         )

@@ -26,10 +26,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -80,11 +84,11 @@ fun TweetDetail(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     } else {
         val liked = remember {
@@ -111,7 +115,7 @@ fun TweetDetail(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(60.dp),
-                        color = Color(0xff1DA1F2)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -128,23 +132,28 @@ fun TweetDetail(
                         }
                     }
 
-                    Scaffold(modifier = Modifier.fillMaxSize(),
+                    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior( rememberTopAppBarState())
+
+                    Scaffold(modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
                             TopAppBar(
+                                scrollBehavior = scrollBehavior,
                                 title = {
                                     Text(
                                         text = "Tweet",
                                         fontSize = 20.sp,
-                                        color = Color.Black,
+                                        color = MaterialTheme.colorScheme.onBackground,
                                         fontWeight = FontWeight.W400,
-                                        modifier = Modifier.padding(start = 15.dp)
+                                        modifier = Modifier.padding(start = 25.dp)
                                     )
                                 },
                                 navigationIcon = {
                                     Icon(
                                         imageVector = Icons.Rounded.ArrowBack,
                                         contentDescription = "iconback",
-                                        tint = Color.Black,
+                                        tint = MaterialTheme.colorScheme.onBackground,
                                         modifier = Modifier
                                             .size(25.dp)
                                             .clickable {
@@ -152,22 +161,22 @@ fun TweetDetail(
                                             })
                                 },
                                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                                    containerColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.background
                                 ),
-                                modifier = Modifier.padding(horizontal = 10.dp)
+                                modifier = Modifier.padding(horizontal = 0.dp)
                             )
                         }) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .verticalScroll(scrollState)
-                                .background(color = Color.White)
+                                .background(color = MaterialTheme.colorScheme.background)
                                 .padding(horizontal = 5.dp, vertical = 60.dp)
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(color = Color.White)
+                                    .background(color = MaterialTheme.colorScheme.background)
                                     .padding(vertical = 20.dp),
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start
@@ -180,7 +189,7 @@ fun TweetDetail(
                                         .size(60.dp)
                                         .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                                 )
-                                Spacer(modifier = Modifier.width(10.dp))
+                                Spacer(modifier = Modifier.width(15.dp))
                                 Column(
                                     verticalArrangement = Arrangement.Top,
                                     horizontalAlignment = Alignment.Start,
@@ -189,13 +198,13 @@ fun TweetDetail(
                                     Text(
                                         text = "${data!!["name"]}",
                                         fontWeight = FontWeight.W700,
-                                        color = Color(0xff14171A),
-                                        fontSize = 25.sp
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        fontSize = 20.sp
                                     )
                                     Text(
                                         text = "@${data!!["userId"]}",
                                         fontWeight = FontWeight.W400,
-                                        color = Color(0xff657786),
+                                        color = MaterialTheme.colorScheme.secondary,
                                         fontSize = 17.sp
                                     )
 
@@ -204,7 +213,7 @@ fun TweetDetail(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(color = Color.White)
+                                    .background(color = MaterialTheme.colorScheme.background)
                                     .padding(horizontal = 15.dp)
                             ) {
 
@@ -212,8 +221,8 @@ fun TweetDetail(
                                 Text(
                                     text = "${listner!!["content"]}",
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xFF3C3D3F),
-                                    fontSize = 20.sp
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    fontSize = 18.sp
                                 )
                                 Spacer(modifier = Modifier.height(25.dp))
                                 if (listner!!["url"] == "") {
@@ -243,15 +252,15 @@ fun TweetDetail(
 
                                 Spacer(modifier = Modifier.height(15.dp))
                                 Divider(
-                                    thickness = 1.dp,
-                                    color = Color(0xffAAB8C2).copy(alpha = 0.3F),
+                                    thickness = 0.4.dp,
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5F),
                                     modifier = Modifier.padding(horizontal = 1.dp)
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(color = Color.White),
+                                        .background(color = MaterialTheme.colorScheme.background),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -259,14 +268,14 @@ fun TweetDetail(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color = Color.White),
+                                                .background(color = MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
 
                                             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.reply),
                                                 contentDescription = "list",
-                                                tint = Color(0xff657786),
+                                                tint = MaterialTheme.colorScheme.onBackground,
                                                 modifier = Modifier
                                                     .size(20.dp)
                                                     .clickable {
@@ -276,7 +285,7 @@ fun TweetDetail(
                                             Text(
                                                 text = listner!!["commentNo"].toString(),
                                                 fontWeight = FontWeight.W400,
-                                                color = Color(0xff657786),
+                                                color = MaterialTheme.colorScheme.onBackground,
                                                 fontSize = 14.sp
                                             )
                                         }
@@ -285,7 +294,7 @@ fun TweetDetail(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color = Color.White),
+                                                .background(color = MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
@@ -296,9 +305,7 @@ fun TweetDetail(
                                                 id = R.drawable.like
                                             ),
                                                 contentDescription = "likes",
-                                                tint = if (liked.value) Color(0xFFCC1D1D) else Color(
-                                                    0xff657786
-                                                ),
+                                                tint = if (liked.value) Color(0xFFCC1D1D) else MaterialTheme.colorScheme.onBackground,
                                                 modifier = Modifier
                                                     .size(20.dp)
                                                     .clickable {
@@ -316,7 +323,7 @@ fun TweetDetail(
                                             Text(
                                                 text = listner!!["likesCount"].toString(),
                                                 fontWeight = FontWeight.W400,
-                                                color = Color(0xff657786),
+                                                color = MaterialTheme.colorScheme.onBackground,
                                                 fontSize = 14.sp
                                             )
                                         }
@@ -325,14 +332,14 @@ fun TweetDetail(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color = Color.White),
+                                                .background(color = MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
 
                                             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.retweet),
                                                 contentDescription = "retweet",
-                                                tint = Color(0xff657786),
+                                                tint = MaterialTheme.colorScheme.onBackground,
                                                 modifier = Modifier
                                                     .size(20.dp)
                                                     .clickable {
@@ -348,7 +355,7 @@ fun TweetDetail(
                                             Text(
                                                 text = listner!!["retweets"].toString(),
                                                 fontWeight = FontWeight.W400,
-                                                color = Color(0xff657786),
+                                                color = MaterialTheme.colorScheme.onBackground,
                                                 fontSize = 14.sp
                                             )
                                         }
@@ -357,7 +364,7 @@ fun TweetDetail(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color = Color.White),
+                                                .background(color = MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
@@ -365,7 +372,7 @@ fun TweetDetail(
                                             Icon(
                                                 imageVector = Icons.Default.Share,
                                                 contentDescription = "list",
-                                                tint = Color(0xff657786),
+                                                tint = MaterialTheme.colorScheme.onBackground,
                                                 modifier = Modifier.size(20.dp)
                                             )
                                         }
@@ -373,8 +380,8 @@ fun TweetDetail(
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
                                 Divider(
-                                    thickness = 1.dp,
-                                    color = Color(0xffAAB8C2).copy(alpha = 0.3F),
+                                    thickness = 0.4.dp,
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5F),
                                     modifier = Modifier.padding(horizontal = 1.dp)
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
@@ -382,21 +389,21 @@ fun TweetDetail(
                                 Text(
                                     text = date.toDate().toString(),
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xFF3C3D3F),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
                                 Divider(
-                                    thickness = 1.dp,
-                                    color = Color(0xffAAB8C2).copy(alpha = 0.3F),
+                                    thickness = 0.4.dp,
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5F),
                                     modifier = Modifier.padding(horizontal = 1.dp)
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
                                 Text(
                                     text = "Replies",
                                     fontWeight = FontWeight.W700,
-                                    color = Color(0xFF3C3D3F),
-                                    fontSize = 22.sp
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
                                 val listComments = mainViewModel.getComments(documentId)
@@ -409,13 +416,13 @@ fun TweetDetail(
                                     Column(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .background(color = Color.White),
+                                            .background(color = MaterialTheme.colorScheme.background),
                                         verticalArrangement = Arrangement.Center,
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         CircularProgressIndicator(
                                             modifier = Modifier.size(60.dp),
-                                            color = Color(0xff1DA1F2)
+                                            color = MaterialTheme.colorScheme.primary
                                         )
                                     }
                                 } else {
@@ -423,7 +430,7 @@ fun TweetDetail(
 
                                         Text(
                                             text = ("No Replies"), fontWeight = FontWeight.W400,
-                                            color = Color(0xFF3C3D3F),
+                                            color = MaterialTheme.colorScheme.secondary,
                                             fontSize = 16.sp,
                                             modifier = Modifier.padding(vertical = 20.dp, horizontal = 20.dp)
                                         )

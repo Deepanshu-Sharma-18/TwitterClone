@@ -19,6 +19,11 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -47,8 +52,13 @@ import com.example.twitterclone.provider.authentication.AuthViewModel
 
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
+import com.google.firebase.Timestamp
+import com.google.type.DateTime
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.Date
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -67,7 +77,7 @@ fun TweetCard(
             modifier = Modifier
                 .fillMaxSize()
                 .height(400.dp)
-                .background(color =  MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -92,12 +102,12 @@ fun TweetCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .background(color =  MaterialTheme.colorScheme.background),
+                        .background(color = MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary
+                        modifier = Modifier.size(30.dp), color =  MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -123,7 +133,7 @@ fun TweetCard(
                                 .clickable {
                                     navController.navigate(Screens.TweetDetail.name + "/$documentId")
                                 }
-                                .background(color =  MaterialTheme.colorScheme.background)
+                                .background(color = MaterialTheme.colorScheme.background)
                                 .padding(vertical = 0.dp),
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Top) {
@@ -157,10 +167,15 @@ fun TweetCard(
 
                             }else{
 
+                                val timestamp = listner!!["timestamp"] as Timestamp
+                                val date = timestamp.toDate()
+                                val currentDate = LocalDateTime.now()
+                                val targetDate = LocalDateTime.of(2023 , date.month , date.date , date.hours , date.minutes)
+                                Log.d("DateTarget" , targetDate.toString())
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(color =  MaterialTheme.colorScheme.background)
+                                        .background(color = MaterialTheme.colorScheme.background)
                                         .padding(vertical = 10.dp),
                                     verticalAlignment = Alignment.Top,
                                     horizontalArrangement = Arrangement.Start
@@ -170,7 +185,7 @@ fun TweetCard(
                                         contentDescription = "profile pic",
                                         contentScale = ContentScale.FillWidth,
                                         modifier = Modifier
-                                            .size(60.dp)
+                                            .size(50.dp)
                                             .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
@@ -179,19 +194,84 @@ fun TweetCard(
                                         horizontalAlignment = Alignment.Start,
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        Text(
-                                            text = "${data!!["name"]}",
-                                            fontWeight = FontWeight.W700,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            fontSize = 18.sp
-                                        )
-                                        Text(
-                                            text = "@${data!!["userId"]}",
-                                            fontWeight = FontWeight.W400,
-                                            color =  MaterialTheme.colorScheme.secondary,
-                                            fontSize = 15.sp
-                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+                                            Text(
+                                                text = "${data!!["name"]}",
+                                                fontWeight = FontWeight.W600,
+                                                color = MaterialTheme.colorScheme.onBackground,
+                                                fontSize = 16.sp
+                                            )
+
+                                            if(true){
+                                                Spacer(modifier = Modifier.width(5.dp))
+                                                Surface (
+                                                    shape = RoundedCornerShape(corner = CornerSize(50)),
+                                                    modifier = Modifier.size(18.dp),
+                                                    color = MaterialTheme.colorScheme.primary
+                                                ){
+                                                    Icon(
+                                                        imageVector = Icons.Rounded.Check,
+                                                        contentDescription = "check",
+                                                        Modifier.size(10.dp),
+                                                        tint = Color.White
+                                                    )
+                                                }
+
+                                            }
+
+                                            Spacer(modifier = Modifier.width(10.dp))
+
+                                        }
+
                                         Spacer(modifier = Modifier.height(5.dp))
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start
+                                        ) {
+
+                                            Row (
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Start
+                                            ){
+                                                Text(
+                                                    text = "@",
+                                                    fontWeight = FontWeight.W400,
+                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    fontSize = 15.sp
+                                                )
+                                                Text(
+                                                    text = "${data!!["userId"]}",
+                                                    fontWeight = FontWeight.W400,
+                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    fontSize = 15.sp
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Start
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Rounded.DateRange,
+                                                    contentDescription = "" ,
+                                                    Modifier.size(14.dp) ,
+                                                    tint = MaterialTheme.colorScheme.secondary )
+                                                Spacer(modifier = Modifier.width(2.dp))
+                                                Text(
+                                                    text = "${ChronoUnit.DAYS.between(targetDate,currentDate)}d",
+                                                    fontWeight = FontWeight.W400,
+                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    fontSize = 15.sp
+                                                )
+
+                                            }
+                                        }
+
+
+                                        Spacer(modifier = Modifier.height(10.dp))
                                         Text(
                                             text = listner!!["content"].toString(),
                                             fontWeight = FontWeight.W400,
@@ -244,15 +324,15 @@ fun TweetCard(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color =  MaterialTheme.colorScheme.background),
+                                                .background(color = MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Start
+                                            horizontalArrangement = Arrangement.SpaceAround
                                         ) {
                                             Box(modifier = Modifier.width(60.dp)) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color =  MaterialTheme.colorScheme.background),
+                                                        .background(color = MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
@@ -348,7 +428,7 @@ fun TweetCard(
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color =  MaterialTheme.colorScheme.background),
+                                                        .background(color = MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
@@ -366,6 +446,7 @@ fun TweetCard(
                                         }
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(10.dp))
                             }
                         }
                     }

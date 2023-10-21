@@ -395,7 +395,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
 
         val tweetsRef = store.collection("tweets")
-            .orderBy("timestamp" , Query.Direction.ASCENDING)
+            .orderBy("timestamp" , Query.Direction.DESCENDING)
             .whereIn("userId", followedTweets)
             .snapshots()
 

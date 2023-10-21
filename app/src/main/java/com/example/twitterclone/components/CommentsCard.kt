@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,8 +45,8 @@ fun CommentsCard(result : MutableMap<String , Any> , mainViewModel: MainViewMode
     if ( user == null){
         Column(modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            CircularProgressIndicator(modifier= Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            .background(color = MaterialTheme.colorScheme.background), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator(modifier= Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     }
     else{
@@ -57,19 +58,19 @@ fun CommentsCard(result : MutableMap<String , Any> , mainViewModel: MainViewMode
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White)
+                    .background(color = MaterialTheme.colorScheme.background)
                     .padding(vertical = 0.dp), horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
                 Divider(
-                    thickness = 1.dp,
-                    color = Color(0xffAAB8C2).copy(alpha = 0.2F),
+                    thickness = 0.4.dp,
+                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5F),
                     modifier = Modifier.padding(horizontal = 1.dp)
                 )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.colorScheme.background)
                         .padding(vertical = 20.dp),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.Start
@@ -79,32 +80,32 @@ fun CommentsCard(result : MutableMap<String , Any> , mainViewModel: MainViewMode
                         contentDescription = "profile pic",
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(40.dp)
                             .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Column(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.background)
                     ) {
                         Text(
                             text = "${user!!["name"]}",
                             fontWeight = FontWeight.W700,
-                            color = Color(0xff14171A),
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 18.sp
                         )
                         Text(
-                            text = "${user!!["userId"]}",
+                            text = "@${user!!["userId"]}",
                             fontWeight = FontWeight.W400,
-                            color = Color(0xff657786),
+                            color = MaterialTheme.colorScheme.secondary,
                             fontSize = 15.sp
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = "${result["content"]}",
                             fontWeight = FontWeight.W400,
-                            color = Color(0xFF3C3D3F),
+                            color = MaterialTheme.colorScheme.secondary,
                             fontSize = 16.sp
                         )
                         Spacer(modifier = Modifier.height(25.dp))

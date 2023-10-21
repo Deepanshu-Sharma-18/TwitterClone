@@ -27,10 +27,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +52,8 @@ import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
@@ -60,188 +67,204 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val data = mainViewModel.data.observeAsState()
 
-    if (data.value == null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color =  MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary)
-        }
-    } else {
-        val following = mainViewModel.getFollowing()
-            .collectAsState(initial = null)
-        val userData = mainViewModel.data
-        Log.d("DATAPROFILEHome", "$userData")
-        Scaffold(
-            topBar = {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color =  MaterialTheme.colorScheme.background)
-                            .padding(vertical = 10.dp, horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        IconButton(onClick = { navController.navigate(Screens.ProfileScreen.name) }) {
-                            AsyncImage(
-                                model = data.value!!["profilePic"],
-                                contentDescription = "profile image",
-                                contentScale = ContentScale.FillWidth,
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
-                            )
-                        }
+    val topAppBarScrollBehavior =  TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState()
+    )
 
-                        AsyncImage(
-                            model = "https://cdn-icons-png.flaticon.com/512/733/733579.png?w=740&t=st=1688284770~exp=1688285370~hmac=4749b7d8b4f365320a235d7098ffbdd6ca7f5082d5f90d5d19940594a0bdc3f1",
-                            contentDescription = "image-twitter",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .size(30.dp)
+    val isLoading = remember{
+        mutableStateOf(false)
+    }
 
-                        )
 
-                        IconButton(onClick = {
-                            authViewModel.auth.signOut()
-                            navController.navigate(Screens.SignIN.name)
-                        }) {
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.moments),
-                                contentDescription = "sparkling",
-                                modifier = Modifier
-                                    .size(25.dp)
-                            )
-                        }
-                    }
-                    Divider(
-                        thickness = 0.4.dp,
-                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                        modifier = Modifier.padding(horizontal = 1.dp)
-                    )
-                }
-            }, floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navController.navigate(Screens.CreateTweet.name) },
-                    contentColor =  MaterialTheme.colorScheme.background,
-                    containerColor =  MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(corner = CornerSize(50))
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.tweet),
-                        contentDescription = "add",
-                        modifier = Modifier.size(27.dp)
-                    )
-                }
-            },
-            bottomBar = {
+    if(isLoading.value ){
 
-                BottomAppBar(
-                    contentPadding = PaddingValues(0.dp),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor =  MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                ) {
+    }else {
 
-                    Column (verticalArrangement = Arrangement.Top){
-                        Divider(
-                            thickness = 0.4.dp,
-                            color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(horizontal = 1.dp)
-                        )
+        if (data.value == null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(30.dp), color =  MaterialTheme.colorScheme.primary)
+            }
+        } else {
+            val following = mainViewModel.getFollowing()
+                .collectAsState(initial = null)
+            val userData = mainViewModel.data
+            Log.d("DATAPROFILEHome", "$userData")
+            Scaffold(
+                topBar = {
+                    Column {
                         Row(
-                            Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 30.dp, vertical = 13.dp),
+                                .background(color = MaterialTheme.colorScheme.background)
+                                .padding(vertical = 5.dp, horizontal = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.home),
-                                contentDescription = "home",
+                            IconButton(onClick = { navController.navigate(Screens.ProfileScreen.name) }) {
+                                AsyncImage(
+                                    model = data.value!!["profilePic"],
+                                    contentDescription = "profile image",
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                        .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
+                                )
+                            }
+
+                            AsyncImage(
+                                model = "https://cdn-icons-png.flaticon.com/512/733/733579.png?w=740&t=st=1688284770~exp=1688285370~hmac=4749b7d8b4f365320a235d7098ffbdd6ca7f5082d5f90d5d19940594a0bdc3f1",
+                                contentDescription = "image-twitter",
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier
-                                    .size(23.dp)
-                                    .clickable {
-                                        navController.navigate(Screens.HomeScreen.name)
-                                    },
-                                tint =  MaterialTheme.colorScheme.onBackground
+                                    .size(30.dp)
+
                             )
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.search),
-                                contentDescription = "search",
-                                modifier = Modifier
-                                    .size(23.dp)
-                                    .clickable {
-                                        navController.navigate(Screens.SearchScreen.name)
-                                    },
-                                tint =  MaterialTheme.colorScheme.onBackground
+
+                            IconButton(onClick = {
+                                authViewModel.auth.signOut()
+                                navController.navigate(Screens.SignIN.name)
+                            }) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.moments),
+                                    contentDescription = "sparkling",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
+                        }
+                        Divider(
+                            thickness = 0.4.dp,
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                            modifier = Modifier.padding(horizontal = 1.dp)
+                        )
+                    }
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = { navController.navigate(Screens.CreateTweet.name) },
+                        contentColor = MaterialTheme.colorScheme.background,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(corner = CornerSize(50)),
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.tweet),
+                            contentDescription = "add",
+                            modifier = Modifier.size(23.dp)
+                        )
+                    }
+                },
+                bottomBar = {
+
+                    BottomAppBar(
+                        contentPadding = PaddingValues(0.dp),
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(44.dp)
+                    ) {
+
+                        Column(verticalArrangement = Arrangement.Top) {
+                            Divider(
+                                thickness = 0.4.dp,
+                                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                modifier = Modifier.padding(horizontal = 1.dp)
                             )
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.alert),
-                                contentDescription = "notification",
-                                modifier = Modifier.size(23.dp),
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.messagehome),
-                                contentDescription = "Mail",
-                                modifier = Modifier.size(23.dp),
-                                tint =  MaterialTheme.colorScheme.onBackground
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 40.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.home),
+                                    contentDescription = "home",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable {
+                                            navController.navigate(Screens.HomeScreen.name)
+                                        },
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.search),
+                                    contentDescription = "search",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable {
+                                            navController.navigate(Screens.SearchScreen.name)
+                                        },
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.alert),
+                                    contentDescription = "notification",
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.messagehome),
+                                    contentDescription = "Mail",
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+
+
+                        }
+                    }
+                }) {
+
+
+                val tweets by mainViewModel.getTweetsHomeScreen(following)
+                    .collectAsState(initial = null)
+                if (tweets == null) {
+                    Log.d("isNUll", tweets.toString())
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = MaterialTheme.colorScheme.background),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(60.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                } else {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                            .background(color = MaterialTheme.colorScheme.background)
+                            .padding(top = 58.dp, start = 3.dp, bottom = 50.dp)
+                    ) {
+
+
+                        for (tweet in tweets!!) {
+                            TweetCard(
+                                documentId = tweet.id,
+                                mainViewModel = mainViewModel,
+                                navController = navController,
+                                authViewModel = authViewModel
                             )
                         }
 
-
-                    }
-                }
-            }) {
-
-
-            val tweets by mainViewModel.getTweetsHomeScreen(following)
-                .collectAsState(initial = null)
-            if (tweets == null) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.background),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(60.dp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            } else {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .background(color =  MaterialTheme.colorScheme.background)
-                        .padding(top = 60.dp, start = 3.dp, bottom = 60.dp)
-                ) {
-
-
-                    for (tweet in tweets!!) {
-                        TweetCard(
-                            documentId = tweet.id,
-                            mainViewModel = mainViewModel,
-                            navController = navController,
-                            authViewModel = authViewModel
-                        )
                     }
 
-                }
 
+                }
 
             }
-
         }
     }
 }

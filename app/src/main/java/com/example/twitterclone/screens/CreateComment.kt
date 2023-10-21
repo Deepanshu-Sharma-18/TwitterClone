@@ -35,6 +35,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -99,11 +100,11 @@ fun CreateComment(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     }else{
 
@@ -112,7 +113,7 @@ fun CreateComment(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
-                    .background(color = Color.White), contentPadding = PaddingValues(0.dp)
+                    .background(color = MaterialTheme.colorScheme.background), contentPadding = PaddingValues(0.dp)
             ) {
                 Column(
                     Modifier.fillMaxWidth(),
@@ -120,14 +121,14 @@ fun CreateComment(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Divider(
-                        thickness = 1.dp,
-                        color = Color(0xE4F7FAFC),
+                        thickness = 0.4.dp,
+                        color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(color = Color.White)
+                            .background(color = MaterialTheme.colorScheme.background)
                             .padding(horizontal = 25.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
@@ -137,7 +138,7 @@ fun CreateComment(
                             Icon(
                                 imageVector = Icons.Rounded.Menu,
                                 contentDescription = "menu",
-                                tint = Color(0xff1DA1F2),
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(30.dp)
                             )
                         }
@@ -146,7 +147,7 @@ fun CreateComment(
                             text = "${characterLimit - content.value.length}",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.W600,
-                            color = Color(0xffAAB8C2),
+                            color = MaterialTheme.colorScheme.secondary,
 
                             )
                     }
@@ -158,13 +159,13 @@ fun CreateComment(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(20.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White),
+                            .background(MaterialTheme.colorScheme.background),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -173,7 +174,7 @@ fun CreateComment(
                                 imageVector = Icons.Rounded.Close,
                                 contentDescription = "close",
                                 modifier = Modifier.size(25.dp),
-                                tint = Color.Black
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
 
                         }
@@ -185,7 +186,7 @@ fun CreateComment(
                                 }
                                 navController.popBackStack()
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xff1DA1F2)),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .width(80.dp)
                                 .height(35.dp),
@@ -226,13 +227,13 @@ fun CreateComment(
                                 text = "Tweet your reply",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.W400,
-                                color = Color(0xffAAB8C2)
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         },
                         textStyle = TextStyle(
                             fontWeight = FontWeight.W400,
                             fontSize = 18.sp,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.secondary
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -240,10 +241,11 @@ fun CreateComment(
                             .padding(top = 10.dp, start = 25.dp),
                         maxLines = 25,
                         colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.White, focusedIndicatorColor = Color.Transparent,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
-                            cursorColor = Color(0xff1DA1F2)
+                            cursorColor = MaterialTheme.colorScheme.primary
                         ),
 
                         )
