@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,11 +67,11 @@ fun RetweetCard(
             modifier = Modifier
                 .fillMaxSize()
                 .height(400.dp)
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary)
         }
     } else {
         var exist = remember {
@@ -91,12 +92,12 @@ fun RetweetCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .background(color = Color.White),
+                        .background(color =  MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2)
+                        modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -122,7 +123,7 @@ fun RetweetCard(
                                 .clickable {
                                     navController.navigate(Screens.TweetDetail.name + "/$documentId")
                                 }
-                                .background(color = Color.White)
+                                .background(color =  MaterialTheme.colorScheme.background)
                                 .padding(vertical = 0.dp),
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Top) {
@@ -130,7 +131,7 @@ fun RetweetCard(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(color = Color.White)
+                                    .background(color =  MaterialTheme.colorScheme.background)
                                     .padding(vertical = 10.dp),
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start
@@ -152,20 +153,20 @@ fun RetweetCard(
                                     Text(
                                         text = "${data!!["name"]}",
                                         fontWeight = FontWeight.W700,
-                                        color = Color(0xff14171A),
+                                        color =  MaterialTheme.colorScheme.onBackground,
                                         fontSize = 18.sp
                                     )
                                     Text(
                                         text = "@${data!!["userId"]}",
                                         fontWeight = FontWeight.W400,
-                                        color = Color(0xff657786),
+                                        color =  MaterialTheme.colorScheme.secondary,
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.height(5.dp))
                                     Text(
                                         text = listner!!["content"].toString(),
                                         fontWeight = FontWeight.W400,
-                                        color = Color(0xFF3C3D3F),
+                                        color =  MaterialTheme.colorScheme.onTertiary,
                                         fontSize = 16.sp
                                     )
                                     Spacer(modifier = Modifier.height(25.dp))
@@ -214,7 +215,7 @@ fun RetweetCard(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .background(color = Color.White),
+                                            .background(color =  MaterialTheme.colorScheme.background),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Start
                                     ) {
@@ -222,14 +223,14 @@ fun RetweetCard(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .background(color = Color.White),
+                                                    .background(color =  MaterialTheme.colorScheme.background),
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Start
                                             ) {
 
                                                 Icon(imageVector = ImageVector.vectorResource(id = R.drawable.reply),
                                                     contentDescription = "list",
-                                                    tint = Color(0xff657786),
+                                                    tint =  MaterialTheme.colorScheme.onBackground,
                                                     modifier = Modifier
                                                         .size(20.dp)
                                                         .clickable {
@@ -239,7 +240,7 @@ fun RetweetCard(
                                                 Text(
                                                     text = listner!!["commentNo"].toString(),
                                                     fontWeight = FontWeight.W400,
-                                                    color = Color(0xff657786),
+                                                    color =  MaterialTheme.colorScheme.onBackground,
                                                     fontSize = 14.sp
                                                 )
                                             }
@@ -248,7 +249,7 @@ fun RetweetCard(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .background(color = Color.White),
+                                                    .background(color =  MaterialTheme.colorScheme.background),
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Start
                                             ) {
@@ -259,9 +260,7 @@ fun RetweetCard(
                                                     id = R.drawable.like
                                                 ),
                                                     contentDescription = "likes",
-                                                    tint = if (liked.value) Color(0xFFCC1D1D) else Color(
-                                                        0xff657786
-                                                    ),
+                                                    tint = if (liked.value) Color(0xFFCC1D1D) else  MaterialTheme.colorScheme.onBackground,
                                                     modifier = Modifier
                                                         .size(20.dp)
                                                         .clickable {
@@ -279,7 +278,7 @@ fun RetweetCard(
                                                 Text(
                                                     text = listner!!["likesCount"].toString(),
                                                     fontWeight = FontWeight.W400,
-                                                    color = Color(0xff657786),
+                                                    color = MaterialTheme.colorScheme.onBackground,
                                                     fontSize = 14.sp
                                                 )
                                             }
@@ -288,14 +287,14 @@ fun RetweetCard(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .background(color = Color.White),
+                                                    .background(color =  MaterialTheme.colorScheme.background),
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Start
                                             ) {
 
                                                 Icon(imageVector = ImageVector.vectorResource(id = R.drawable.retweet),
                                                     contentDescription = "retweet",
-                                                    tint = Color(0xff657786),
+                                                    tint =  MaterialTheme.colorScheme.onBackground,
                                                     modifier = Modifier
                                                         .size(20.dp)
                                                         .clickable {
@@ -308,7 +307,7 @@ fun RetweetCard(
                                                 Text(
                                                     text = listner!!["retweets"].toString(),
                                                     fontWeight = FontWeight.W400,
-                                                    color = Color(0xff657786),
+                                                    color = MaterialTheme.colorScheme.onBackground,
                                                     fontSize = 14.sp
                                                 )
                                             }
@@ -317,7 +316,7 @@ fun RetweetCard(
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .background(color = Color.White),
+                                                    .background(color =  MaterialTheme.colorScheme.background),
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Start
                                             ) {
@@ -325,7 +324,7 @@ fun RetweetCard(
                                                 Icon(
                                                     imageVector = Icons.Default.Share,
                                                     contentDescription = "list",
-                                                    tint = Color(0xff657786),
+                                                    tint =  MaterialTheme.colorScheme.onBackground,
                                                     modifier = Modifier.size(20.dp)
                                                 )
 

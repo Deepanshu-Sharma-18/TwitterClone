@@ -64,11 +64,11 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color =  MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary)
         }
     } else {
         val following = mainViewModel.getFollowing()
@@ -81,7 +81,7 @@ fun HomeScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White)
+                            .background(color =  MaterialTheme.colorScheme.background)
                             .padding(vertical = 10.dp, horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -119,16 +119,16 @@ fun HomeScreen(
                         }
                     }
                     Divider(
-                        thickness = 1.dp,
-                        color = Color(0x2AAAB8C2),
+                        thickness = 0.4.dp,
+                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                 }
             }, floatingActionButton = {
                 FloatingActionButton(
                     onClick = { navController.navigate(Screens.CreateTweet.name) },
-                    contentColor = Color.White,
-                    containerColor = Color(0xff1DA1F2),
+                    contentColor =  MaterialTheme.colorScheme.background,
+                    containerColor =  MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(corner = CornerSize(50))
                 ) {
                     Icon(
@@ -142,8 +142,8 @@ fun HomeScreen(
 
                 BottomAppBar(
                     contentPadding = PaddingValues(0.dp),
-                    containerColor = Color.White,
-                    contentColor = Color(0xffAAB8C2),
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor =  MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
@@ -151,8 +151,8 @@ fun HomeScreen(
 
                     Column (verticalArrangement = Arrangement.Top){
                         Divider(
-                            thickness = 1.dp,
-                            color = Color(0x2AAAB8C2),
+                            thickness = 0.4.dp,
+                            color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
                             modifier = Modifier.padding(horizontal = 1.dp)
                         )
                         Row(
@@ -170,7 +170,7 @@ fun HomeScreen(
                                     .clickable {
                                         navController.navigate(Screens.HomeScreen.name)
                                     },
-                                tint = Color.Black
+                                tint =  MaterialTheme.colorScheme.onBackground
                             )
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.search),
@@ -180,19 +180,19 @@ fun HomeScreen(
                                     .clickable {
                                         navController.navigate(Screens.SearchScreen.name)
                                     },
-                                tint = Color.Black
+                                tint =  MaterialTheme.colorScheme.onBackground
                             )
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.alert),
                                 contentDescription = "notification",
                                 modifier = Modifier.size(23.dp),
-                                tint = Color.Black
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.messagehome),
                                 contentDescription = "Mail",
                                 modifier = Modifier.size(23.dp),
-                                tint = Color.Black
+                                tint =  MaterialTheme.colorScheme.onBackground
                             )
                         }
 
@@ -208,13 +208,13 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.tertiary),
+                        .background(color = MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(60.dp),
-                        color = Color(0xff1DA1F2)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -223,7 +223,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState)
-                        .background(color =  MaterialTheme.colorScheme.tertiary)
+                        .background(color =  MaterialTheme.colorScheme.background)
                         .padding(top = 60.dp, start = 3.dp, bottom = 60.dp)
                 ) {
 

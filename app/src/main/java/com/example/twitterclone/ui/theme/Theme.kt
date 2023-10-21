@@ -16,25 +16,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
+private val darkColorScheme = darkColorScheme(
     primary = twitter,
-    secondary = Color.Black,
-    tertiary = Color(0xFFCAC6C6),
-    onSecondary = Color(0x70AAB8C2)
+    background = Color.Black,
+    onBackground = Color(0xFFEEEEEE),
+    tertiary = Color(0x8FDAEFFF),
+    secondary = Color(0xC9D3D3D3),
+    onTertiary =  Color(0xFFF0F0F0)
 )
 
-private val LightColorScheme = lightColorScheme(
+private val lightColorScheme = lightColorScheme(
     primary = twitter,
-    secondary = Color.White,
-    tertiary = Color(0xff242526),
-    onSecondary = Color(0x70AAB8C2)
+    background = Color.White,
+    onBackground = Color(0xFF181818),
+    tertiary = Color(0x70AAB8C2),
+    secondary = Color(0xFF606061),
+    onTertiary =  Color(0xFF343435)
 )
 
 @Composable
 fun TwittercloneTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -43,8 +47,8 @@ fun TwittercloneTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

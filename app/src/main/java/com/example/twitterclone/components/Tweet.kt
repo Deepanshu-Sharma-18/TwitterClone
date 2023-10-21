@@ -67,11 +67,11 @@ fun TweetCard(
             modifier = Modifier
                 .fillMaxSize()
                 .height(400.dp)
-                .background(color =  MaterialTheme.colorScheme.tertiary),
+                .background(color =  MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary)
         }
     } else {
         var exist = remember {
@@ -92,7 +92,7 @@ fun TweetCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
-                        .background(color =  MaterialTheme.colorScheme.tertiary),
+                        .background(color =  MaterialTheme.colorScheme.background),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -123,13 +123,13 @@ fun TweetCard(
                                 .clickable {
                                     navController.navigate(Screens.TweetDetail.name + "/$documentId")
                                 }
-                                .background(color =  MaterialTheme.colorScheme.tertiary)
+                                .background(color =  MaterialTheme.colorScheme.background)
                                 .padding(vertical = 0.dp),
                             horizontalAlignment = Alignment.Start,
                             verticalArrangement = Arrangement.Top) {
                             Divider(
-                                thickness = 0.7.dp,
-                                color = Color(0x70AAB8C2),
+                                thickness = 0.4.dp,
+                                color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -144,7 +144,7 @@ fun TweetCard(
                                     Text(
                                         text = "${listner!!["name"]} Retweeted",
                                         fontWeight = FontWeight.W400,
-                                        color = Color(0xff657786),
+                                        color = MaterialTheme.colorScheme.secondary,
                                         fontSize = 15.sp
                                     )
                                 }
@@ -160,7 +160,7 @@ fun TweetCard(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(color = Color.White)
+                                        .background(color =  MaterialTheme.colorScheme.background)
                                         .padding(vertical = 10.dp),
                                     verticalAlignment = Alignment.Top,
                                     horizontalArrangement = Arrangement.Start
@@ -182,20 +182,20 @@ fun TweetCard(
                                         Text(
                                             text = "${data!!["name"]}",
                                             fontWeight = FontWeight.W700,
-                                            color = Color(0xff14171A),
+                                            color = MaterialTheme.colorScheme.onBackground,
                                             fontSize = 18.sp
                                         )
                                         Text(
                                             text = "@${data!!["userId"]}",
                                             fontWeight = FontWeight.W400,
-                                            color = Color(0xff657786),
+                                            color =  MaterialTheme.colorScheme.secondary,
                                             fontSize = 15.sp
                                         )
                                         Spacer(modifier = Modifier.height(5.dp))
                                         Text(
                                             text = listner!!["content"].toString(),
                                             fontWeight = FontWeight.W400,
-                                            color = Color(0xFF3C3D3F),
+                                            color =  MaterialTheme.colorScheme.onTertiary,
                                             fontSize = 16.sp
                                         )
                                         Spacer(modifier = Modifier.height(25.dp))
@@ -244,7 +244,7 @@ fun TweetCard(
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(color = Color.White),
+                                                .background(color =  MaterialTheme.colorScheme.background),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Start
                                         ) {
@@ -252,14 +252,14 @@ fun TweetCard(
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color = Color.White),
+                                                        .background(color =  MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
 
                                                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.reply),
                                                         contentDescription = "list",
-                                                        tint = Color(0xff657786),
+                                                        tint = MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier
                                                             .size(20.dp)
                                                             .clickable {
@@ -269,7 +269,7 @@ fun TweetCard(
                                                     Text(
                                                         text = listner!!["commentNo"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color = Color(0xff657786),
+                                                        color =  MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -278,7 +278,7 @@ fun TweetCard(
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color = Color.White),
+                                                        .background(color = MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
@@ -289,9 +289,7 @@ fun TweetCard(
                                                         id = R.drawable.like
                                                     ),
                                                         contentDescription = "likes",
-                                                        tint = if (liked.value) Color(0xFFCC1D1D) else Color(
-                                                            0xff657786
-                                                        ),
+                                                        tint = if (liked.value) Color(0xFFCC1D1D) else  MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier
                                                             .size(20.dp)
                                                             .clickable {
@@ -309,7 +307,7 @@ fun TweetCard(
                                                     Text(
                                                         text = listner!!["likesCount"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color = Color(0xff657786),
+                                                        color =  MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -318,14 +316,14 @@ fun TweetCard(
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color = Color.White),
+                                                        .background(color = MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
 
                                                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.retweet),
                                                         contentDescription = "retweet",
-                                                        tint = Color(0xff657786),
+                                                        tint =  MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier
                                                             .size(20.dp)
                                                             .clickable {
@@ -341,7 +339,7 @@ fun TweetCard(
                                                     Text(
                                                         text = listner!!["retweets"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color = Color(0xff657786),
+                                                        color =  MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -350,7 +348,7 @@ fun TweetCard(
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .background(color = Color.White),
+                                                        .background(color =  MaterialTheme.colorScheme.background),
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.Start
                                                 ) {
@@ -358,7 +356,7 @@ fun TweetCard(
                                                     Icon(
                                                         imageVector = Icons.Default.Share,
                                                         contentDescription = "list",
-                                                        tint = Color(0xff657786),
+                                                        tint =  MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier.size(20.dp)
                                                     )
 

@@ -1,6 +1,7 @@
 package com.example.twitterclone.screens.Authentication.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -76,12 +78,13 @@ fun SignUp(
     }
 
 
-    Scaffold(modifier = Modifier.fillMaxSize()) {
+    Scaffold(modifier = Modifier.fillMaxSize() , containerColor = MaterialTheme.colorScheme.background) {
         Column(modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(20.dp)
-            .clickable (interactionSource = interactionSource , indication = null) {
+            .clickable(interactionSource = interactionSource, indication = null) {
                 keyboardController?.hide()
                 focusManager.clearFocus()
             },
@@ -103,7 +106,7 @@ fun SignUp(
                 text = "Create New Account",
                 fontSize = 35.sp,
                 fontWeight = FontWeight.W400,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.onBackground,
 
                 )
             Spacer(modifier = Modifier.height(80.dp))
@@ -215,7 +218,10 @@ fun SignUp(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text(
                     text = "Create Account",

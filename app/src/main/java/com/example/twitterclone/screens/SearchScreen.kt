@@ -25,6 +25,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -71,7 +72,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
         bottomBar = {
             BottomAppBar(
                 contentPadding = PaddingValues(0.dp),
-                containerColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.background,
                 contentColor = Color(0xffAAB8C2),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,8 +81,8 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
 
                 Column(verticalArrangement = Arrangement.Top) {
                     Divider(
-                        thickness = 1.dp,
-                        color = Color(0x2AAAB8C2),
+                        thickness = 0.4.dp,
+                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(
@@ -99,7 +100,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                                 .clickable {
                                     navController.navigate(Screens.HomeScreen.name)
                                 },
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.search),
@@ -109,19 +110,19 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                                 .clickable {
                                     navController.navigate(Screens.SearchScreen.name)
                                 },
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.alert),
                             contentDescription = "notification",
                             modifier = Modifier.size(23.dp),
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.messagehome),
                             contentDescription = "Mail",
                             modifier = Modifier.size(23.dp),
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
 
@@ -133,7 +134,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White)
+                .background(color = MaterialTheme.colorScheme.background)
 
         ) {
             Row(
@@ -168,13 +169,13 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                             text = "UserId",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.W400,
-                            color = Color(0xffAAB8C2)
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     },
                     textStyle = TextStyle(
                         fontWeight = FontWeight.W400,
                         fontSize = 15.sp,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.secondary
                     ),
                     modifier = Modifier
                         .width(280.dp)
@@ -187,10 +188,15 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                             )
                         ),
                     maxLines = 1,
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White,
-                        cursorColor = Color(0xff1DA1F2)
-                    ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                        focusedBorderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                        cursorColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.secondary,
+                        focusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                        unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    )
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 IconButton(onClick = {
@@ -199,7 +205,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                     Icon(
                         Icons.Default.Search,
                         contentDescription = "search",
-                        tint = Color.Black,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(25.dp)
                     )
                 }
@@ -222,13 +228,13 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .background(color = Color.White),
+                                .background(color = MaterialTheme.colorScheme.background),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(60.dp),
-                                color = Color(0xff1DA1F2)
+                                color =  MaterialTheme.colorScheme.primary
                             )
                         }
                     } else {

@@ -1,6 +1,7 @@
 package com.example.twitterclone.screens.Authentication.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -65,6 +67,7 @@ fun ForgotPasswordScreen(navController: NavController, authViewModel: AuthViewMo
         Column (
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
                 .padding(20.dp)
                 .verticalScroll(scrollState)
                 .clickable(interactionSource = interactionSource, indication = null) {
@@ -79,7 +82,7 @@ fun ForgotPasswordScreen(navController: NavController, authViewModel: AuthViewMo
                 text="Forgot Password",
                 fontSize = 35.sp,
                 fontWeight = FontWeight.W400,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.onBackground,
                 )
 
 
@@ -116,6 +119,9 @@ fun ForgotPasswordScreen(navController: NavController, authViewModel: AuthViewMo
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text(
                     text = "Reset Password" ,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +31,13 @@ fun UserCard(result: MutableMap<String, Any>) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xff1DA1F2))
+            .background( MaterialTheme.colorScheme.tertiary)
             .height(100.dp)
     ) {
         Row(
             verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .background(Color(0xff1DA1F2))
+                .background( MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
                 .padding(10.dp)
         ) {
             AsyncImage(
@@ -53,13 +54,13 @@ fun UserCard(result: MutableMap<String, Any>) {
                 Text(
                     text = "${result!!["name"]}",
                     fontWeight = FontWeight.W700,
-                    color = Color(0xff14171A),
+                    color =  MaterialTheme.colorScheme.onBackground,
                     fontSize = 25.sp
                 )
                 Text(
                     text = "@${result!!["userId"]}",
                     fontWeight = FontWeight.W400,
-                    color = Color(0xff657786)
+                    color =  MaterialTheme.colorScheme.secondary
                 )
             }
         }
