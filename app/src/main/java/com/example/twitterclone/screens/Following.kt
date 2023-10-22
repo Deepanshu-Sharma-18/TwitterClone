@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,13 +43,13 @@ fun FollowingList(mainViewModel: MainViewModel , navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(30.dp), color = Color(0xff1DA1F2))
         }
     }else{
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = 0.dp, horizontal = 10.dp)
         ) {
             Column(
@@ -57,7 +58,7 @@ fun FollowingList(mainViewModel: MainViewModel , navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
                 IconButton(onClick = { navController.popBackStack() }) {
@@ -65,7 +66,7 @@ fun FollowingList(mainViewModel: MainViewModel , navController: NavController) {
                         imageVector = Icons.Rounded.Close,
                         contentDescription = "close",
                         modifier = Modifier.size(25.dp),
-                        tint = Color.Black
+                        tint =MaterialTheme.colorScheme.onBackground
                     )
 
                 }
@@ -81,13 +82,13 @@ fun FollowingList(mainViewModel: MainViewModel , navController: NavController) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
-                                    .background(color = Color.White),
+                                    .background(color =MaterialTheme.colorScheme.background),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 CircularProgressIndicator(
-                                    modifier = Modifier.size(60.dp),
-                                    color = Color(0xff1DA1F2)
+                                    modifier = Modifier.size(30.dp),
+                                    color =MaterialTheme.colorScheme.primary
                                 )
                             }
                         } else {

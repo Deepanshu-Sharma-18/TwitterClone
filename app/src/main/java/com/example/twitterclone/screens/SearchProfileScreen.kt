@@ -20,12 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -62,11 +65,11 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     }else{
 
@@ -76,7 +79,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .background(Color.White),
+                    .background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
@@ -90,7 +93,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
-                        .background(color = Color(0xff1DA1F2))
+                        .background(color = MaterialTheme.colorScheme.primary)
                         .constrainAs(topPart) {
                             top.linkTo(parent.top, 0.dp)
                             start.linkTo(parent.start, 0.dp)
@@ -111,13 +114,14 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                                 }, modifier = Modifier
                                     .size(30.dp)
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
-                                    .background(color = Color(0xff657786)),
+                                    .background(color = MaterialTheme.colorScheme.primary),
 
                                 ) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "back",
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
+                                    tint = MaterialTheme.colorScheme.background
                                 )
                             }
 
@@ -135,7 +139,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                             contentDescription = "profile pic",
                             contentScale = ContentScale.FillWidth,
                             modifier = Modifier
-                                .size(120.dp)
+                                .size(80.dp)
                                 .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                         )
                     }
@@ -148,15 +152,16 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                         OutlinedButton(
                             onClick = {
                                     mainViewModel.follow(documentId , data!!["followers"] as Long, documentId = documentId, userId = data!!["userId"].toString())
-
                             },
-                            modifier = Modifier.background(color = Color.White)
+                            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+                                .width(130.dp)
+                                .height(34.dp)
                         ) {
 
                             Text(
                                 text = if(bool!!.data == null) "Follow" else "Unfollow",
                                 fontWeight = FontWeight.W500,
-                                color = Color(0xff14171A)
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -165,7 +170,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(15.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
@@ -173,24 +178,45 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
 
 
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "${data!!["name"]}",
-                        fontWeight = FontWeight.W700,
-                        color = Color(0xff14171A),
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${data!!["name"]}",
+                            fontWeight = FontWeight.W700,
+                            color = MaterialTheme.colorScheme.onBackground,
 
-                        fontSize = 25.sp
-                    )
+                            fontSize = 25.sp
+                        )
+                        if(true){
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Surface (
+                                shape = RoundedCornerShape(corner = CornerSize(50)),
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            ){
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = "check",
+                                    Modifier.size(15.dp),
+                                    tint = Color.White
+                                )
+                            }
+
+                        }
+
+                    }
                     Text(
                         text = "@${data!!["userId"]}",
                         fontWeight = FontWeight.W400,
-                        color = Color(0xff657786)
+                        color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(modifier = Modifier.height(30.dp))
 
                         Text(
                             text = "${data!!["bio"]}",
                             fontWeight = FontWeight.W400,
-                            color = Color(0xff657786),
+                            color = MaterialTheme.colorScheme.secondary,
                             fontFamily = RalewayFontFamily,
                             fontSize = 15.sp
                         )
@@ -207,7 +233,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                                 SpanStyle(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             ) {
                                 append("${data!!["following"]}")
@@ -215,7 +241,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                             withStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xff657786),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontSize = 15.sp
                                 )
                             ) {
@@ -228,7 +254,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                                 SpanStyle(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             ) {
                                 append("${data!!["followers"]}")
@@ -236,7 +262,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                             withStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xff657786),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontSize = 15.sp
                                 )
                             ) {
@@ -248,7 +274,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                     Text(
                         text = "Tweets",
                         fontWeight = FontWeight.W700,
-                        color = Color(0xff14171A),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 19.sp,
                         modifier = Modifier.padding(horizontal = 15.dp)
                     )

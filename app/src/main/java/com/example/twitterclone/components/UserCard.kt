@@ -32,7 +32,7 @@ fun UserCard(result: MutableMap<String, Any>) {
         modifier = Modifier
             .fillMaxWidth()
             .background( MaterialTheme.colorScheme.tertiary)
-            .height(100.dp)
+            .height(80.dp)
     ) {
         Row(
             verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
@@ -46,7 +46,7 @@ fun UserCard(result: MutableMap<String, Any>) {
                 contentScale = ContentScale.FillWidth,
 
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(60.dp)
                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
             )
             Spacer(modifier = Modifier.width(15.dp))
@@ -55,12 +55,13 @@ fun UserCard(result: MutableMap<String, Any>) {
                     text = "${result!!["name"]}",
                     fontWeight = FontWeight.W700,
                     color =  MaterialTheme.colorScheme.onBackground,
-                    fontSize = 25.sp
+                    fontSize = 20.sp
                 )
                 Text(
                     text = "@${result!!["userId"]}",
                     fontWeight = FontWeight.W400,
-                    color =  MaterialTheme.colorScheme.secondary
+                    color =  MaterialTheme.colorScheme.secondary,
+                    fontSize = 17.sp
                 )
             }
         }

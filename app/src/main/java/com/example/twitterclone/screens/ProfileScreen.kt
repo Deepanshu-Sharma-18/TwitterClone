@@ -21,12 +21,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -66,11 +69,11 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = Color(0xff1DA1F2))
+            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
         }
     } else {
 
@@ -80,7 +83,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .background(Color.White),
+                    .background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
@@ -95,7 +98,7 @@ fun ProfileScreen(
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
-                        .background(color = Color(0xff1DA1F2))
+                        .background(color = MaterialTheme.colorScheme.primary)
                         .constrainAs(topPart) {
                             top.linkTo(parent.top, 0.dp)
                             start.linkTo(parent.start, 0.dp)
@@ -104,7 +107,8 @@ fun ProfileScreen(
                         }) {
 
                         Row(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(horizontal = 20.dp, vertical = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -113,15 +117,18 @@ fun ProfileScreen(
                                 Modifier
                                     .size(35.dp)
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
-                                    .background(color = Color(0xff657786))
+                                    .background(color = MaterialTheme.colorScheme.primary)
                                     .clickable {
                                         navController.popBackStack()
                                     }) {
-                                Column (modifier = Modifier.fillMaxSize().background(color = Color(0xff657786)), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                                Column (modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = MaterialTheme.colorScheme.primary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
                                     Icon(
                                         imageVector = Icons.Default.ArrowBack,
                                         contentDescription = "back",
-                                        modifier = Modifier.size(25.dp)
+                                        modifier = Modifier.size(25.dp),
+                                        tint = MaterialTheme.colorScheme.background
                                     )
                                 }
                             }
@@ -130,19 +137,26 @@ fun ProfileScreen(
                                 Modifier
                                     .size(35.dp)
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
-                                    .background(color = Color(0xff657786))
+                                    .background(color = MaterialTheme.colorScheme.primary)
                                     .clickable {
                                         mainViewModel.auth.signOut()
-                                        val navOptions = NavOptions.Builder()
-                                            .setPopUpTo(navController.graph.startDestinationRoute, inclusive = false)
+                                        val navOptions = NavOptions
+                                            .Builder()
+                                            .setPopUpTo(
+                                                navController.graph.startDestinationRoute,
+                                                inclusive = false
+                                            )
                                             .build()
-                                        navController.navigate(Screens.SignIN.name , navOptions)
+                                        navController.navigate(Screens.SignIN.name, navOptions)
                                     }) {
-                                Column (modifier = Modifier.fillMaxSize().background(color = Color(0xff657786)), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                                Column (modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = MaterialTheme.colorScheme.primary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
                                     Icon(
                                         imageVector = Icons.Default.ExitToApp,
                                         contentDescription = "back",
-                                        modifier = Modifier.size(25.dp)
+                                        modifier = Modifier.size(25.dp),
+                                        tint = MaterialTheme.colorScheme.background
                                     )
                                 }
                             }
@@ -158,7 +172,7 @@ fun ProfileScreen(
                             model = data.value!!["profilePic"],
                             contentDescription = "profile pic",
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(80.dp)
                                 .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                         )
                     }
@@ -171,15 +185,17 @@ fun ProfileScreen(
                     }) {
                         OutlinedButton(
                             onClick = {
-
                                 navController.navigate(Screens.EditProfile.name)
                             },
-                            modifier = Modifier.background(color = Color.White)
+                            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+                                .width(130.dp)
+                                .height(34.dp)
                         ) {
                             Text(
                                 text = "Edit profile",
                                 fontWeight = FontWeight.W500,
-                                color = Color(0xff14171A)
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 12.sp
                             )
                         }
                     }
@@ -188,32 +204,53 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(15.dp),
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(horizontal = 15.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
 
 
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "${data.value!!["name"]}",
-                        fontWeight = FontWeight.W700,
-                        color = Color(0xff14171A),
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${data.value!!["name"]}",
+                            fontWeight = FontWeight.W700,
+                            color = MaterialTheme.colorScheme.onBackground,
 
-                        fontSize = 25.sp
-                    )
+                            fontSize = 25.sp
+                        )
+                        if(true){
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Surface (
+                                shape = RoundedCornerShape(corner = CornerSize(50)),
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            ){
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = "check",
+                                    Modifier.size(15.dp),
+                                    tint = Color.White
+                                )
+                            }
+
+                        }
+
+                    }
                     Text(
                         text = "@${data.value!!["userId"]}",
                         fontWeight = FontWeight.W400,
-                        color = Color(0xff657786)
+                        color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(modifier = Modifier.height(30.dp))
 
                     Text(
                         text = "${data.value!!["bio"]}",
                         fontWeight = FontWeight.W400,
-                        color = Color(0xff657786),
+                        color = MaterialTheme.colorScheme.secondary,
                         fontFamily = RalewayFontFamily,
                         fontSize = 16.sp
                     )
@@ -230,7 +267,7 @@ fun ProfileScreen(
                                 SpanStyle(
                                     fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             ) {
                                 append("${data.value!!["following"]}")
@@ -238,7 +275,7 @@ fun ProfileScreen(
                             withStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xff657786),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontSize = 17.sp
                                 )
                             ) {
@@ -253,7 +290,7 @@ fun ProfileScreen(
                                 SpanStyle(
                                     fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             ) {
                                 append("0")
@@ -261,7 +298,7 @@ fun ProfileScreen(
                             withStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
-                                    color = Color(0xff657786),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontSize = 17.sp
                                 )
                             ) {
@@ -275,7 +312,7 @@ fun ProfileScreen(
                     Text(
                         text = "Tweets",
                         fontWeight = FontWeight.W700,
-                        color = Color(0xff14171A),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 19.sp,
                         modifier = Modifier.padding(horizontal = 15.dp)
                     )
