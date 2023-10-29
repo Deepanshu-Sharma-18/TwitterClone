@@ -82,7 +82,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                 Column(verticalArrangement = Arrangement.Top) {
                     Divider(
                         thickness = 0.4.dp,
-                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(
@@ -179,14 +179,8 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                     ),
                     modifier = Modifier
                         .width(280.dp)
-                        .height(50.dp)
-                        .clip(
-                            shape = RoundedCornerShape(
-                                corner = CornerSize(
-                                    5.dp
-                                )
-                            )
-                        ),
+                        .height(50.dp),
+                    shape = RoundedCornerShape(corner = CornerSize(15.dp)),
                     maxLines = 1,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.Transparent,
@@ -198,7 +192,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                         unfocusedLabelColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                     )
                 )
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(7.dp))
                 IconButton(onClick = {
                     visible.value = true
                 }) {
@@ -206,7 +200,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                         Icons.Default.Search,
                         contentDescription = "search",
                         tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(25.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
@@ -252,6 +246,19 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                         }
                     }
                 }
+            }else{
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+
+                    Text(text = "Search Twitter" , style = TextStyle(
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.W500
+                    ))
+                }
+
             }
         }
     }

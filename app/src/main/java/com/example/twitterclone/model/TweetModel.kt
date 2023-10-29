@@ -9,7 +9,7 @@ data class TweetModel(
     val likesCount:Long,
     val timestamp: Any,
     val tweetId: String,
-    val url: String,
+    val url: List<Map<String,String>>,
     val userId: String,
     val retweeted : Boolean,
     val name : String?,

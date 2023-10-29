@@ -23,10 +23,9 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import okhttp3.internal.wait
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
@@ -60,43 +59,82 @@ class MainViewModel @Inject constructor() : ViewModel() {
             }
     }
 
-    fun postTweet(content: String?, mediaUri: Uri?, isImage: Boolean) {
+    suspend fun postTweet(content: String?, mediaUri: List<Pair<Uri? , Boolean>>?) {
+
+        var tweetCnt = tweetCount + 1
 
         var downloadUri = ""
-        tweetCount += 1
+        var mediaList = mutableListOf<Map<String,String>>()
+
+        val seed = System.currentTimeMillis()
+        val randomInt = Random(seed)
         // Get a reference to the storage location where you want to upload the file
-        if (mediaUri != null) {
-            val storageRef = storage.reference
+        val storageRef = storage.reference
+        if (!mediaUri.isNullOrEmpty()) {
 
             var fileRef = storageRef.child("images")
-            if (isImage) {
+
+            for (i in 0..mediaUri.lastIndex-1){
+                Log.d("TWEETSTATUS" , "here in loop $i")
+                if (mediaUri[i].second) {
+
+                    fileRef =
+                        storageRef.child("${currentUser!!.uid}/${randomInt.nextInt(0,1000000)}.jpg") // Specify the desired storage location and file name
+                } else {
+                    fileRef = storageRef.child("${currentUser!!.uid}/${randomInt.nextInt(0,1000000)}.mp4")
+                }
+
+                val uploadTask = mediaUri[i].first?.let { fileRef.putFile(it) }
+
+                val result = uploadTask?.await()
+
+                if (result?.task?.isSuccessful == true){
+
+                    mediaList.add(
+                        hashMapOf(
+                            "link" to result.storage.downloadUrl.await().toString() ,
+                            "isImage" to mediaUri[i].second.toString()
+                        )
+                    )
+
+                }
+            }
+
+            Log.d("TWEETSTATUS" , mediaList.toList().toString())
+
+            if (mediaUri[mediaUri.lastIndex].second) {
 
                 fileRef =
-                    storageRef.child("images/${currentUser!!.uid}${tweetCount}.jpg") // Specify the desired storage location and file name
+                    storageRef.child("${currentUser!!.uid}/${randomInt.nextInt(0,10000)}.jpg") // Specify the desired storage location and file name
             } else {
-                fileRef = storageRef.child("video/${currentUser!!.uid}${tweetCount}.mp4")
+                fileRef = storageRef.child("${currentUser!!.uid}/${randomInt.nextInt(0,10000)}.mp4")
             }
             // Create a reference to the file in Firebase Storage
 
-            // Upload the file to Firebase Storage
-            val uploadTask = fileRef.putFile(mediaUri)
-            val urlTask = uploadTask.continueWithTask { task ->
+            val uploadTask = mediaUri[mediaUri.lastIndex].first?.let { fileRef.putFile(it) }
+            val urlTask = uploadTask?.continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {
                         throw it
                     }
                 }
+
                 fileRef.downloadUrl
-            }.addOnCompleteListener { task ->
+            }?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    downloadUri = task.result.toString()
+                    mediaList.add(hashMapOf(
+                        "link" to task.result.toString(),
+                        "isImage" to mediaUri[mediaUri.lastIndex].second.toString()
+                    ))
+                    Log.d("TWEETSTATUS", mediaList.toList().toString())
+
                     val tweet = TweetModel(
                         content = content ?: "",
                         userId = data.value!!["userId"].toString(),
-                        tweetId = tweetCount.toString(),
+                        tweetId = tweetCnt.toString(),
                         likesCount = 0L,
                         timestamp = FieldValue.serverTimestamp(),
-                        url = downloadUri,
+                        url = mediaList,
                         commentNo = 0,
                         retweeted = false,
                         name = null,
@@ -104,16 +142,16 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
                     )
                     val documentRef =
-                        store.collection("tweets").document("${currentUser!!.uid}${tweetCount}")
+                        store.collection("tweets").document("${currentUser!!.uid}${tweetCnt}")
 
                     documentRef.set(tweet)
                         .addOnSuccessListener {
-                            Log.d("SUCCESS", "success tweet gg")
+                            Log.d("TWEETSTATUS", "success tweet gg")
                         }
                         .addOnFailureListener { e ->
-                            Log.w(ContentValues.TAG, "Error adding document", e)
+                            Log.d("TWEETSTATUS", "Error adding document", e)
                         }
-                    Log.d("DOWNLOADURL", "$downloadUri")
+
                 }
             }
         }
@@ -123,10 +161,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
             val tweet = TweetModel(
                 content = content ?: "",
                 userId = data.value!!["userId"].toString(),
-                tweetId = tweetCount.toString(),
+                tweetId = tweetCnt.toString(),
                 likesCount = 0L,
                 timestamp = FieldValue.serverTimestamp(),
-                url = "",
+                url = emptyList(),
                 commentNo = 0,
                 retweeted = false,
                 name = null,
@@ -151,8 +189,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
             email = data.value!!["email"].toString(),
             bio = data.value!!["bio"].toString(),
             profilePic = data.value!!["profilePic"].toString(),
+            noOfTweets = tweetCnt,
             userId = data.value!!["userId"].toString(),
-            noOfTweets = tweetCount,
             followers = 0,
             following = 0
         )
@@ -401,6 +439,15 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
         return tweetsRef
     }
+
+    fun getTrendingTweets() :  Flow<QuerySnapshot>{
+        val trendingRef = store.collection("tweets")
+            .orderBy("likesCount" , Query.Direction.DESCENDING)
+            .snapshots()
+
+        return trendingRef
+    }
+
 
     suspend fun searchUserExist(userId: String): String? {
         val Ref = store.collection("users")

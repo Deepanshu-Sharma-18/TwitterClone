@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +20,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,15 +50,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -64,17 +75,23 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
+import com.example.twitterclone.components.CircularPageIndicator
 import com.example.twitterclone.components.isImageMimeType
 import com.example.twitterclone.components.isVideoMimeType
 import com.example.twitterclone.provider.MainViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun CreateTweet(
-    mainViewModel: MainViewModel ,
+    mainViewModel: MainViewModel,
     navController: NavController
 ) {
     val content = remember {
@@ -86,13 +103,21 @@ fun CreateTweet(
     val scrollState = rememberScrollState()
     val characterLimit = 250
 
-    var mediaUri by remember { mutableStateOf<Uri?>(null) }
+    var mediaUri = remember {
+        mutableStateListOf<Pair<Uri, Boolean>>()
+    }
     val context = LocalContext.current
 
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        mediaUri = uri
-    }
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) { uri ->
+            uri.forEach {
+                mediaUri.add(Pair(it, it.isImageMimeType(context)))
+            }
+            Log.d("MEDIAURLSELECT", mediaUri.toList().toString())
+        }
     val data = mainViewModel.data.observeAsState()
+
+
 
     if (data.value == null) {
         Column(
@@ -102,16 +127,20 @@ fun CreateTweet(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
+            CircularProgressIndicator(
+                modifier = Modifier.size(60.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
         }
-    }else{
+    } else {
 
         Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
             BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
-                    .background(color = MaterialTheme.colorScheme.background), contentPadding = PaddingValues(0.dp)
+                    .background(color = MaterialTheme.colorScheme.background),
+                contentPadding = PaddingValues(0.dp)
             ) {
                 Column(
                     Modifier.fillMaxWidth(),
@@ -119,8 +148,8 @@ fun CreateTweet(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Divider(
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.tertiary,
+                        thickness = 0.4.dp,
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(
@@ -158,7 +187,7 @@ fun CreateTweet(
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(20.dp)
+                        .padding(top = 20.dp, bottom = 55.dp, start = 20.dp, end = 20.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -167,7 +196,7 @@ fun CreateTweet(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        IconButton(onClick = { navController.popBackStack()}) {
+                        IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.Rounded.Close,
                                 contentDescription = "close",
@@ -178,7 +207,10 @@ fun CreateTweet(
                         }
                         Button(
                             onClick = {
-                                      mainViewModel.postTweet(content = content.value,mediaUri,isImage.value)
+                                GlobalScope.launch {
+
+                                mainViewModel.postTweet(content = content.value, mediaUri)
+                                }
                                 navController.popBackStack()
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
@@ -213,7 +245,7 @@ fun CreateTweet(
                     TextField(
                         value = content.value,
                         onValueChange = {
-                            if(it.length < characterLimit){
+                            if (it.length < characterLimit) {
                                 content.value = it
                             }
                         },
@@ -245,40 +277,72 @@ fun CreateTweet(
 
                         )
                     Spacer(modifier = Modifier.height(20.dp))
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, end = 5.dp, bottom = 80.dp)){
-                        mediaUri?.let { uri ->
-                            when {
-                                uri.isImageMimeType(context) -> {
-                                    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
-                                    LaunchedEffect(uri) {
-                                        withContext(Dispatchers.IO) {
-                                            val inputStream = context.contentResolver.openInputStream(uri)
-                                            bitmap.value = BitmapFactory.decodeStream(inputStream)
-                                        }
-                                    }
-                                    isImage.value = true
-                                    bitmap.value?.let { btm ->
-                                        Image(
-                                            bitmap = btm.asImageBitmap(),
-                                            contentDescription = null,
-                                            contentScale = ContentScale.FillWidth,
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-                                }
-                                uri.isVideoMimeType(context) -> {
-                                    isImage.value = false
-                                    com.example.twitterclone.components.VideoPlayer(uri = uri, link = null)
-                                }
-                                else -> {
-                                    // Unsupported media type
-                                }
-                            }
-                        }
+                    val mediaPager = rememberPagerState(initialPage = 0) {
+                        mediaUri.size
                     }
+
+                    val currentPage by rememberUpdatedState(mediaPager.currentPage)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 30.dp, end = 5.dp, bottom = 0.dp)
+                    ) {
+
+                        HorizontalPager(
+                            state = mediaPager, pageSpacing = 10.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(shape = RoundedCornerShape(corner = CornerSize(10.dp)))
+                        ) { page ->
+
+                            if (mediaUri[page].second) {
+                                val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+
+                                LaunchedEffect(Unit) {
+                                    withContext(Dispatchers.IO) {
+                                        val inputStream =
+                                            context.contentResolver.openInputStream(mediaUri[page].first)
+                                        bitmap.value =
+                                            BitmapFactory.decodeStream(inputStream)
+                                    }
+                                }
+                                isImage.value = true
+                                bitmap.value?.let { btm ->
+                                    Image(
+                                        bitmap = btm.asImageBitmap(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.FillWidth,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            } else {
+                                com.example.twitterclone.components.VideoPlayer(
+                                    uri = mediaUri[page].first,
+                                    link = null
+                                )
+                            }
+
+                        }
+
+
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    if (mediaUri.size > 0) {
+
+                        CircularPageIndicator(
+                            numberOfPages = mediaUri.size, currentPage = currentPage,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterHorizontally)
+                        )
+
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
 
                 }
             }

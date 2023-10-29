@@ -2,6 +2,7 @@ package com.example.twitterclone.components
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +58,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RetweetCard(
@@ -247,45 +252,95 @@ fun RetweetCard(
                                         fontSize = 16.sp
                                     )
                                     Spacer(modifier = Modifier.height(25.dp))
-                                    if (listner!!["url"] == "") {
+                                    val urls = listner!!["url"] as? List<Map<String, String>>
+                                        ?: emptyList()
+                                    if (urls.isEmpty()) {
                                     } else {
 
-                                        if (listner!!["url"].toString().contains("images")) {
-                                            AsyncImage(
 
-                                                model = listner!!["url"],
-                                                contentDescription = "post-image",
+                                        Log.d("IMAGEFEED" , urls.toList().toString())
+
+                                        val mediaPager = rememberPagerState(initialPage = 0) {
+                                            urls.size
+                                        }
+
+                                        val currentPage by rememberUpdatedState(mediaPager.currentPage)
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(
+                                                    start = 30.dp,
+                                                    end = 5.dp,
+                                                    bottom = 0.dp
+                                                )
+                                        ) {
+
+                                            HorizontalPager(
+                                                state = mediaPager, pageSpacing = 10.dp,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .padding(end = 15.dp)
                                                     .clip(
                                                         shape = RoundedCornerShape(
                                                             corner = CornerSize(
-                                                                20.dp
-                                                            )
-                                                        )
-                                                    ),
-                                                contentScale = ContentScale.FillWidth
-                                            )
-                                        } else {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(end = 15.dp)
-                                                    .clip(
-                                                        shape = RoundedCornerShape(
-                                                            corner = CornerSize(
-                                                                20.dp
+                                                                10.dp
                                                             )
                                                         )
                                                     )
-                                            ) {
-                                                VideoPlayer(
-                                                    uri = null,
-                                                    link = listner!!["url"].toString(),
-                                                )
+                                            ) { page ->
+                                                if (urls[page]["isImage"] == "true") {
+                                                    AsyncImage(
+
+                                                        model = urls[page]["link"],
+                                                        contentDescription = "post-image",
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(end = 15.dp)
+                                                            .clip(
+                                                                shape = RoundedCornerShape(
+                                                                    corner = CornerSize(
+                                                                        20.dp
+                                                                    )
+                                                                )
+                                                            ),
+                                                        contentScale = ContentScale.FillWidth
+                                                    )
+                                                } else {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(end = 15.dp)
+                                                            .clip(
+                                                                shape = RoundedCornerShape(
+                                                                    corner = CornerSize(
+                                                                        20.dp
+                                                                    )
+                                                                )
+                                                            )
+                                                    ) {
+                                                        VideoPlayer(
+                                                            uri = null,
+                                                            link = urls[page]["link"].toString(),
+                                                        )
+                                                    }
+                                                }
+
+
                                             }
                                         }
+
+                                        Spacer(modifier = Modifier.height(20.dp))
+
+                                        if (urls.size > 0) {
+                                            CircularPageIndicator(
+                                                numberOfPages = urls.size,
+                                                currentPage = currentPage,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .align(Alignment.CenterHorizontally)
+                                            )
+
+                                        }
+
                                     }
 
                                     Spacer(modifier = Modifier.height(25.dp))

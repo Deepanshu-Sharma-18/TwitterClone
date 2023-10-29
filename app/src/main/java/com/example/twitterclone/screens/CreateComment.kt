@@ -122,7 +122,7 @@ fun CreateComment(
                 ) {
                     Divider(
                         thickness = 0.4.dp,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(

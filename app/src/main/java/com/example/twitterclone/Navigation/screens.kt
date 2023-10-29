@@ -14,5 +14,6 @@ enum class Screens {
     SearchProfileScreen,
     Followers,
     Following,
-    ForgotPassword
+    ForgotPassword,
+    TrendingScreen
 }

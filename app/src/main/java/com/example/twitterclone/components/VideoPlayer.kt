@@ -55,7 +55,7 @@ fun VideoPlayer(uri: Uri? , link : String?) {
                 )
             },
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().height(250.dp),
         )
     }else{
         io.sanghun.compose.video.VideoPlayer(

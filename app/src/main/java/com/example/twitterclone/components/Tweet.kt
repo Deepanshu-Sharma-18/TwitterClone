@@ -1,7 +1,11 @@
 package com.example.twitterclone.components
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,16 +37,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,12 +64,15 @@ import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import com.google.firebase.Timestamp
 import com.google.type.DateTime
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Date
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun TweetCard(
@@ -81,7 +94,10 @@ fun TweetCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color =  MaterialTheme.colorScheme.primary)
+            CircularProgressIndicator(
+                modifier = Modifier.size(30.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     } else {
         var exist = remember {
@@ -107,7 +123,7 @@ fun TweetCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(30.dp), color =  MaterialTheme.colorScheme.primary
+                        modifier = Modifier.size(30.dp), color = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
@@ -139,13 +155,16 @@ fun TweetCard(
                             verticalArrangement = Arrangement.Top) {
                             Divider(
                                 thickness = 0.4.dp,
-                                color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            Log.d("RETWEETED" ,listner!!["retweeted"].toString() )
-                            if (listner!!["retweeted"] == true){
-                                Row(modifier = Modifier.padding(horizontal = 50.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Log.d("RETWEETED", listner!!["retweeted"].toString())
+                            if (listner!!["retweeted"] == true) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 50.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(id = R.drawable.retweet),
                                         contentDescription = "retweet"
@@ -165,13 +184,19 @@ fun TweetCard(
                                     authViewModel = authViewModel
                                 )
 
-                            }else{
+                            } else {
 
                                 val timestamp = listner!!["timestamp"] as Timestamp
                                 val date = timestamp.toDate()
                                 val currentDate = LocalDateTime.now()
-                                val targetDate = LocalDateTime.of(2023 , date.month , date.date , date.hours , date.minutes)
-                                Log.d("DateTarget" , targetDate.toString())
+                                val targetDate = LocalDateTime.of(
+                                    2023,
+                                    date.month,
+                                    date.date,
+                                    date.hours,
+                                    date.minutes
+                                )
+                                Log.d("DateTarget", targetDate.toString())
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -205,13 +230,17 @@ fun TweetCard(
                                                 fontSize = 16.sp
                                             )
 
-                                            if(true){
+                                            if (true) {
                                                 Spacer(modifier = Modifier.width(5.dp))
-                                                Surface (
-                                                    shape = RoundedCornerShape(corner = CornerSize(50)),
+                                                Surface(
+                                                    shape = RoundedCornerShape(
+                                                        corner = CornerSize(
+                                                            50
+                                                        )
+                                                    ),
                                                     modifier = Modifier.size(18.dp),
                                                     color = MaterialTheme.colorScheme.primary
-                                                ){
+                                                ) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.Check,
                                                         contentDescription = "check",
@@ -232,20 +261,20 @@ fun TweetCard(
                                             horizontalArrangement = Arrangement.Start
                                         ) {
 
-                                            Row (
+                                            Row(
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.Start
-                                            ){
+                                            ) {
                                                 Text(
                                                     text = "@",
                                                     fontWeight = FontWeight.W400,
-                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    color = MaterialTheme.colorScheme.secondary,
                                                     fontSize = 15.sp
                                                 )
                                                 Text(
                                                     text = "${data!!["userId"]}",
                                                     fontWeight = FontWeight.W400,
-                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    color = MaterialTheme.colorScheme.secondary,
                                                     fontSize = 15.sp
                                                 )
                                             }
@@ -256,14 +285,20 @@ fun TweetCard(
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Rounded.DateRange,
-                                                    contentDescription = "" ,
-                                                    Modifier.size(14.dp) ,
-                                                    tint = MaterialTheme.colorScheme.secondary )
+                                                    contentDescription = "",
+                                                    Modifier.size(14.dp),
+                                                    tint = MaterialTheme.colorScheme.secondary
+                                                )
                                                 Spacer(modifier = Modifier.width(2.dp))
                                                 Text(
-                                                    text = "${ChronoUnit.DAYS.between(targetDate,currentDate)}d",
+                                                    text = "${
+                                                        ChronoUnit.DAYS.between(
+                                                            targetDate,
+                                                            currentDate
+                                                        )
+                                                    }d",
                                                     fontWeight = FontWeight.W400,
-                                                    color =  MaterialTheme.colorScheme.secondary,
+                                                    color = MaterialTheme.colorScheme.secondary,
                                                     fontSize = 15.sp
                                                 )
 
@@ -275,49 +310,99 @@ fun TweetCard(
                                         Text(
                                             text = listner!!["content"].toString(),
                                             fontWeight = FontWeight.W400,
-                                            color =  MaterialTheme.colorScheme.onTertiary,
+                                            color = MaterialTheme.colorScheme.onTertiary,
                                             fontSize = 16.sp
                                         )
                                         Spacer(modifier = Modifier.height(25.dp))
-                                        if (listner!!["url"] == "") {
+                                        val urls = listner!!["url"] as? List<Map<String, String>>
+                                            ?: emptyList()
+                                        if (urls.isEmpty()) {
                                         } else {
 
-                                            if (listner!!["url"].toString().contains("images")) {
-                                                AsyncImage(
 
-                                                    model = listner!!["url"],
-                                                    contentDescription = "post-image",
+                                            Log.d("IMAGEFEED" , urls.toList().toString())
+
+                                            val mediaPager = rememberPagerState(initialPage = 0) {
+                                                urls.size
+                                            }
+
+                                            val currentPage by rememberUpdatedState(mediaPager.currentPage)
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(
+                                                        start = 30.dp,
+                                                        end = 5.dp,
+                                                        bottom = 0.dp
+                                                    )
+                                            ) {
+
+                                                HorizontalPager(
+                                                    state = mediaPager, pageSpacing = 10.dp,
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .padding(end = 15.dp)
                                                         .clip(
                                                             shape = RoundedCornerShape(
                                                                 corner = CornerSize(
-                                                                    20.dp
-                                                                )
-                                                            )
-                                                        ),
-                                                    contentScale = ContentScale.FillWidth
-                                                )
-                                            } else {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(end = 15.dp)
-                                                        .clip(
-                                                            shape = RoundedCornerShape(
-                                                                corner = CornerSize(
-                                                                    20.dp
+                                                                    10.dp
                                                                 )
                                                             )
                                                         )
-                                                ) {
-                                                    VideoPlayer(
-                                                        uri = null,
-                                                        link = listner!!["url"].toString(),
-                                                    )
+                                                ) { page ->
+                                                    if (urls[page]["isImage"] == "true") {
+                                                        AsyncImage(
+
+                                                            model = urls[page]["link"],
+                                                            contentDescription = "post-image",
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(end = 15.dp)
+                                                                .clip(
+                                                                    shape = RoundedCornerShape(
+                                                                        corner = CornerSize(
+                                                                            20.dp
+                                                                        )
+                                                                    )
+                                                                ),
+                                                            contentScale = ContentScale.FillWidth
+                                                        )
+                                                    } else {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(end = 15.dp)
+                                                                .clip(
+                                                                    shape = RoundedCornerShape(
+                                                                        corner = CornerSize(
+                                                                            20.dp
+                                                                        )
+                                                                    )
+                                                                )
+                                                        ) {
+                                                            VideoPlayer(
+                                                                uri = null,
+                                                                link = urls[page]["link"].toString(),
+                                                            )
+                                                        }
+                                                    }
+
+
                                                 }
                                             }
+
+                                            Spacer(modifier = Modifier.height(20.dp))
+
+                                            if (urls.size > 0) {
+                                                CircularPageIndicator(
+                                                    numberOfPages = urls.size,
+                                                    currentPage = currentPage,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .align(Alignment.CenterHorizontally)
+                                                )
+
+                                            }
+
                                         }
 
                                         Spacer(modifier = Modifier.height(25.dp))
@@ -349,7 +434,7 @@ fun TweetCard(
                                                     Text(
                                                         text = listner!!["commentNo"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color =  MaterialTheme.colorScheme.onBackground,
+                                                        color = MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -369,7 +454,7 @@ fun TweetCard(
                                                         id = R.drawable.like
                                                     ),
                                                         contentDescription = "likes",
-                                                        tint = if (liked.value) Color(0xFFCC1D1D) else  MaterialTheme.colorScheme.onBackground,
+                                                        tint = if (liked.value) Color(0xFFCC1D1D) else MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier
                                                             .size(20.dp)
                                                             .clickable {
@@ -381,13 +466,14 @@ fun TweetCard(
                                                                     )
 
                                                                 }
+                                                                liked.value = !liked.value
 
                                                             })
                                                     Spacer(modifier = Modifier.width(7.dp))
                                                     Text(
                                                         text = listner!!["likesCount"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color =  MaterialTheme.colorScheme.onBackground,
+                                                        color = MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -403,7 +489,7 @@ fun TweetCard(
 
                                                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.retweet),
                                                         contentDescription = "retweet",
-                                                        tint =  MaterialTheme.colorScheme.onBackground,
+                                                        tint = MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier
                                                             .size(20.dp)
                                                             .clickable {
@@ -419,7 +505,7 @@ fun TweetCard(
                                                     Text(
                                                         text = listner!!["retweets"].toString(),
                                                         fontWeight = FontWeight.W400,
-                                                        color =  MaterialTheme.colorScheme.onBackground,
+                                                        color = MaterialTheme.colorScheme.onBackground,
                                                         fontSize = 14.sp
                                                     )
                                                 }
@@ -436,7 +522,7 @@ fun TweetCard(
                                                     Icon(
                                                         imageVector = Icons.Default.Share,
                                                         contentDescription = "list",
-                                                        tint =  MaterialTheme.colorScheme.onBackground,
+                                                        tint = MaterialTheme.colorScheme.onBackground,
                                                         modifier = Modifier.size(20.dp)
                                                     )
 

@@ -52,6 +52,7 @@ import com.example.twitterclone.provider.authentication.AuthViewModel
 import com.example.twitterclone.provider.MainViewModel
 import com.example.twitterclone.ui.theme.RalewayFontFamily
 import com.example.twitterclone.Navigation.Screens
+import okhttp3.internal.wait
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -139,7 +140,7 @@ fun ProfileScreen(
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                                     .background(color = MaterialTheme.colorScheme.primary)
                                     .clickable {
-                                        mainViewModel.auth.signOut()
+                                        mainViewModel.auth.signOut().wait()
                                         val navOptions = NavOptions
                                             .Builder()
                                             .setPopUpTo(

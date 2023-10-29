@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -43,7 +45,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
@@ -127,8 +132,7 @@ fun HomeScreen(
                             )
 
                             IconButton(onClick = {
-                                authViewModel.auth.signOut()
-                                navController.navigate(Screens.SignIN.name)
+                                navController.navigate(Screens.TrendingScreen.name)
                             }) {
                                 Image(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.moments),
@@ -140,7 +144,7 @@ fun HomeScreen(
                         }
                         Divider(
                             thickness = 0.4.dp,
-                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                             modifier = Modifier.padding(horizontal = 1.dp)
                         )
                     }
@@ -173,7 +177,7 @@ fun HomeScreen(
                         Column(verticalArrangement = Arrangement.Top) {
                             Divider(
                                 thickness = 0.4.dp,
-                                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             )
                             Row(
@@ -222,11 +226,9 @@ fun HomeScreen(
                     }
                 }) {
 
+                Log.d("TESTHOMESCREEN" , data.value!!["following"].toString() + mainViewModel.tweetCount.toString())
 
-                val tweets by mainViewModel.getTweetsHomeScreen(following)
-                    .collectAsState(initial = null)
-                if (tweets == null) {
-                    Log.d("isNUll", tweets.toString())
+                if ( data.value!!["following"].toString() == "0" && mainViewModel.tweetCount == 0L){
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -234,35 +236,73 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(60.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Text(text = "No Tweets", style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.W500
+                        ))
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(text = "Follow People to view tweets", style = TextStyle(
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.W300
+                        ))
+
+
                     }
-                } else {
+                }else{
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
-                            .background(color = MaterialTheme.colorScheme.background)
-                            .padding(top = 58.dp, start = 3.dp, bottom = 50.dp)
-                    ) {
+                    val tweets by mainViewModel.getTweetsHomeScreen(following)
+                        .collectAsState(initial = null)
 
+                    if (tweets == null) {
 
-                        for (tweet in tweets!!) {
-                            TweetCard(
-                                documentId = tweet.id,
-                                mainViewModel = mainViewModel,
-                                navController = navController,
-                                authViewModel = authViewModel
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color = MaterialTheme.colorScheme.background),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(60.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
+
+
                         }
 
+                        Log.d("TWEETSSTATUS" , tweets.toString())
+                        Log.d("TWEETSSTATUS" , tweets?.documents.toString())
+                    } else {
+
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
+                                .background(color = MaterialTheme.colorScheme.background)
+                                .padding(top = 58.dp, start = 3.dp, bottom = 50.dp)
+                        ) {
+
+
+                            for (tweet in tweets!!) {
+                                TweetCard(
+                                    documentId = tweet.id,
+                                    mainViewModel = mainViewModel,
+                                    navController = navController,
+                                    authViewModel = authViewModel
+                                )
+                            }
+
+                        }
+
+
+
                     }
 
-
                 }
+
+
+
 
             }
         }

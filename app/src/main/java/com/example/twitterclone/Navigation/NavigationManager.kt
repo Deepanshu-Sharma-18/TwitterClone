@@ -23,6 +23,7 @@ import com.example.twitterclone.screens.SearchProfileScreen
 import com.example.twitterclone.screens.SearchScreen
 import com.example.twitterclone.screens.Authentication.ui.SignInScreen
 import com.example.twitterclone.screens.Authentication.ui.SignUp
+import com.example.twitterclone.screens.TrendingScreen
 import com.example.twitterclone.screens.TweetDetail
 
 @Composable
@@ -92,6 +93,10 @@ fun NavigationManager() {
             })
         ) {
             CreateComment(mainViewModel = mainViewModel, navController = navController , documentId = it.arguments?.getString("documentId")!! )
+        }
+
+        composable(Screens.TrendingScreen.name){
+            TrendingScreen(mainViewModel , navController , authViewModel)
         }
 
         composable(Screens.SearchScreen.name){
