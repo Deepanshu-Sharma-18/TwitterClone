@@ -67,7 +67,8 @@ class AuthViewModel @Inject constructor() : ViewModel() {
                         userId = userId,
                         noOfTweets = 0,
                         followers = 0,
-                        following = 0
+                        following = 0,
+                        tweets = emptyList()
                     )
                     val documentRef = store.collection("users").document(Firebase.auth.currentUser!!.uid)
 

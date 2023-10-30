@@ -63,6 +63,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
         var tweetCnt = tweetCount + 1
 
+        val tweetsList = data.value!!["tweets"] as MutableList<String>
+
         var downloadUri = ""
         var mediaList = mutableListOf<Map<String,String>>()
 
@@ -109,7 +111,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
             } else {
                 fileRef = storageRef.child("${currentUser!!.uid}/${randomInt.nextInt(0,10000)}.mp4")
             }
-            // Create a reference to the file in Firebase Storage
+
+
+            val newRand = randomInt.nextInt(10000000)
+            tweetsList.add("${currentUser!!.uid}${newRand}")
 
             val uploadTask = mediaUri[mediaUri.lastIndex].first?.let { fileRef.putFile(it) }
             val urlTask = uploadTask?.continueWithTask { task ->
@@ -141,22 +146,26 @@ class MainViewModel @Inject constructor() : ViewModel() {
                         retweets = 0
 
                     )
+
                     val documentRef =
-                        store.collection("tweets").document("${currentUser!!.uid}${tweetCnt}")
+                        store.collection("tweets").document("${currentUser!!.uid}${newRand}")
+
+
 
                     documentRef.set(tweet)
                         .addOnSuccessListener {
                             Log.d("TWEETSTATUS", "success tweet gg")
+
                         }
                         .addOnFailureListener { e ->
-                            Log.d("TWEETSTATUS", "Error adding document", e)
+                            Log.d("TWEETSTATUS", e.toString())
                         }
 
                 }
             }
         }
 
-        if (mediaUri == null) {
+        if (mediaUri.isNullOrEmpty()) {
 
             val tweet = TweetModel(
                 content = content ?: "",
@@ -171,16 +180,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 retweets = 0
 
             )
+            val newRand = randomInt.nextInt(10000000)
             val documentRef =
-                store.collection("tweets").document("${currentUser!!.uid}${tweetCount}")
+                store.collection("tweets").document("${currentUser!!.uid}${newRand}")
 
             documentRef.set(tweet)
-                .addOnSuccessListener {
-                    Log.d("SUCCESS", "success tweet gg")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(ContentValues.TAG, "Error adding document", e)
-                }
+                .await()
+            tweetsList.add("${currentUser!!.uid}${newRand}")
         }
 
 
@@ -192,17 +198,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
             noOfTweets = tweetCnt,
             userId = data.value!!["userId"].toString(),
             followers = 0,
-            following = 0
+            following = 0,
+            tweets = tweetsList
         )
         val documentRef = store.collection("users").document(Firebase.auth.currentUser!!.uid)
 
         documentRef.set(user)
-            .addOnSuccessListener {
-
-            }
-            .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error adding document", e)
-            }
+            .await()
 
     }
 
@@ -263,6 +265,29 @@ class MainViewModel @Inject constructor() : ViewModel() {
             }
         }
 
+    }
+
+
+    fun deleteTweet(documentId: String){
+        val docRef = store.collection("tweets").document(documentId)
+
+
+        val tweetList = data.value!!["tweets"] as MutableList<String>
+
+        tweetList.remove(documentId)
+
+        val initalValue = tweetCount
+
+        val userRef = store.collection("users").document(currentUser!!.uid)
+
+        userRef.update(
+            mutableMapOf(
+                "tweets" to tweetList,
+                "tweetCount" to initalValue - 1
+            )
+        )
+
+        docRef.delete()
     }
 
 

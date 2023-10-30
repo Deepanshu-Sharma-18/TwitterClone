@@ -9,4 +9,5 @@ data class User(
     val noOfTweets: Long,
     val following : Int,
     val followers : Int,
+    val tweets : List<String>
 )

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -140,7 +141,9 @@ fun ProfileScreen(
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                                     .background(color = MaterialTheme.colorScheme.primary)
                                     .clickable {
-                                        mainViewModel.auth.signOut().wait()
+                                        mainViewModel.auth
+                                            .signOut()
+
                                         val navOptions = NavOptions
                                             .Builder()
                                             .setPopUpTo(
@@ -188,7 +191,8 @@ fun ProfileScreen(
                             onClick = {
                                 navController.navigate(Screens.EditProfile.name)
                             },
-                            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colorScheme.background)
                                 .width(130.dp)
                                 .height(34.dp)
                         ) {
@@ -319,13 +323,32 @@ fun ProfileScreen(
                     )
                     Spacer(modifier = Modifier.height(7.dp))
 
-                    for (i in 1..mainViewModel.tweetCount) {
-                        TweetCard(
-                            "${authViewModel.currentuser!!.uid}$i",
-                            navController = navController,
-                            mainViewModel = mainViewModel,
-                            authViewModel = authViewModel
-                        )
+                    val tweetList = data.value!!["tweets"] as List<String>
+
+                    for (id in tweetList) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            
+                            TweetCard(
+                                id,
+                                navController = navController,
+                                mainViewModel = mainViewModel,
+                                authViewModel = authViewModel
+                            )
+                            if(mainViewModel.tweetCount > 0){
+                                Icon(
+                                    imageVector = Icons.Rounded.Delete, contentDescription = "delete" ,
+                                    modifier = Modifier
+                                        .align(alignment = Alignment.TopEnd)
+                                        .padding(horizontal = 5.dp , vertical = 25.dp)
+                                        .clickable {
+                                            mainViewModel.deleteTweet(id)
+                                        }
+                                        .size(18.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
