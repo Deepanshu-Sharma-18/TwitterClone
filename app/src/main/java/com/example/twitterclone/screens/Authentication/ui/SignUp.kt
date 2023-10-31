@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.twitterclone.provider.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
 import com.example.twitterclone.Navigation.Screens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")

@@ -34,7 +34,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -58,8 +57,8 @@ import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.components.CommentsCard
 import com.example.twitterclone.components.VideoPlayer
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import com.example.twitterclone.components.CircularPageIndicator
 import com.google.firebase.Timestamp

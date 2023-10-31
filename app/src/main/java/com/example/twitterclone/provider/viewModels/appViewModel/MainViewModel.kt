@@ -1,15 +1,23 @@
-package com.example.twitterclone.provider
+package com.example.twitterclone.provider.viewModels.appViewModel
 
-import android.content.ContentValues
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.twitterclone.caching.CacheModel
 import com.example.twitterclone.model.CommentsModel
 import com.example.twitterclone.model.TweetModel
 import com.example.twitterclone.model.User
+import com.example.twitterclone.provider.Repository
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -21,14 +29,19 @@ import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.grpc.util.ForwardingLoadBalancer
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor( private val repository: Repository) : ViewModel() {
     private val _data = MutableLiveData<MutableMap<String, Any>?>(null)
     val data: LiveData<MutableMap<String, Any>?> get() = _data
 
@@ -39,7 +52,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     var tweetCount = 0L
 
 
-    fun getProfile() {
+    suspend fun getProfile() {
 
         val documentRef = store.collection("users").document(currentUser!!.uid)
         Log.d("DATAPROFILE", currentUser!!.uid)
@@ -57,6 +70,28 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 Log.d("DATAPROFILE", "Error getting documents.", exception)
 
             }
+            .await()
+    }
+
+
+    fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+
+            return when {
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            // For devices with versions below Android M
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected
+        }
     }
 
     suspend fun postTweet(content: String?, mediaUri: List<Pair<Uri? , Boolean>>?) {
@@ -142,7 +177,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
                         url = mediaList,
                         commentNo = 0,
                         retweeted = false,
-                        name = null,
+                        name = data.value!!["name"].toString(),
                         retweets = 0
 
                     )
@@ -176,7 +211,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 url = emptyList(),
                 commentNo = 0,
                 retweeted = false,
-                name = null,
+                name = data.value!!["name"].toString(),
                 retweets = 0
 
             )
@@ -288,6 +323,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         )
 
         docRef.delete()
+        _data.value = null
     }
 
 
@@ -446,7 +482,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun getTweetsHomeScreen(following: State<QuerySnapshot?>): Flow<QuerySnapshot> {
+     fun getTweetsHomeScreen(following: State<QuerySnapshot?>): Flow<QuerySnapshot> {
 
         val followedTweets = mutableListOf<String>()
         followedTweets.add(data.value!!["userId"].toString())
@@ -464,6 +500,14 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
         return tweetsRef
     }
+
+    suspend fun saveCacheTweets(tweetsCacheList : List<CacheModel>){
+        repository.deleteCachedTweets()
+        repository.insertCachedTweets(tweetsCacheList)
+    }
+
+    fun getCachedTweets() = repository.getCachedTweets()
+
 
     fun getTrendingTweets() :  Flow<QuerySnapshot>{
         val trendingRef = store.collection("tweets")

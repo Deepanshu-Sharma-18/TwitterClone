@@ -29,10 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.twitterclone.components.UserCard
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 
 @Composable
-fun FollowingList(mainViewModel: MainViewModel , navController: NavController) {
+fun FollowingList(mainViewModel: MainViewModel, navController: NavController) {
     val follow by mainViewModel.getFollowing().collectAsState(initial = null)
     val scrollState = rememberScrollState()
     if (follow == null ) {

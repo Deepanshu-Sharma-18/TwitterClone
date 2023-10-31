@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -41,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -53,14 +51,16 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.Navigation.Screens
+import com.example.twitterclone.caching.CacheModel
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun HomeScreen(
@@ -275,6 +275,9 @@ fun HomeScreen(
                     } else {
 
 
+                        val tweetsCacheList = mutableListOf<CacheModel>()
+
+
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -291,6 +294,32 @@ fun HomeScreen(
                                     navController = navController,
                                     authViewModel = authViewModel
                                 )
+
+                                var tp = tweet.data!!["timestamp"] as Timestamp
+                                val date = tp.toDate()
+                                val list = tweet.data!!["url"] as List<Map<String, String>>
+                                val commentNo = tweet.data!!["commentNo"] as Long
+                                val likesCount = tweet.data!!["likesCount"] as Long
+                                tweetsCacheList.add(
+                                    CacheModel(
+                                        tweetId = tweet.data!!["tweetId"].toString(),
+                                        name = tweet.data!!["name"].toString(),
+                                        commentNo = commentNo.toInt() ,
+                                        content = tweet.data!!["content"].toString(),
+                                        likesCount = likesCount.toInt(),
+                                        retweeted = tweet.data!!["retweeted"].toString() == "true",
+                                        retweets = tweet.data!!["retweets"] as Long,
+                                        timestamp = date,
+                                        url = list.size,
+                                        userId = tweet.data!!["userId"].toString()
+                                    )
+                                )
+
+                                Log.d("TWEETSCACHE" , tweetsCacheList.toList().toString())
+                                GlobalScope.launch {
+
+                                    mainViewModel.saveCacheTweets(tweetsCacheList)
+                                }
                             }
 
                         }

@@ -1,15 +1,17 @@
 package com.example.twitterclone.Navigation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.screens.CreateComment
 import com.example.twitterclone.screens.createTweet.CreateTweet
 import com.example.twitterclone.screens.EditProfile
@@ -25,7 +27,11 @@ import com.example.twitterclone.screens.Authentication.ui.SignInScreen
 import com.example.twitterclone.screens.Authentication.ui.SignUp
 import com.example.twitterclone.screens.TrendingScreen
 import com.example.twitterclone.screens.TweetDetail
+import com.example.twitterclone.screens.cacheScreen.CacheScreen
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun NavigationManager() {
     val navController = rememberNavController()
@@ -40,12 +46,20 @@ fun NavigationManager() {
         startDestination = if (user == null) Screens.SignIN.name else Screens.HomeScreen.name
     ) {
         composable(Screens.HomeScreen.name) {
-            mainViewModel.getProfile()
-            HomeScreen(
-                navController = navController,
-                mainViewModel = mainViewModel,
-                authViewModel = authViewModel
-            )
+
+            if(mainViewModel.isInternetAvailable(context = LocalContext.current)){
+                GlobalScope.launch {
+
+                    mainViewModel.getProfile()
+                }
+                HomeScreen(
+                    navController = navController,
+                    mainViewModel = mainViewModel,
+                    authViewModel = authViewModel
+                )
+            }else{
+                CacheScreen(navController = navController , mainViewModel = mainViewModel )
+            }
         }
         composable(Screens.CreateTweet.name) {
             CreateTweet(navController = navController, mainViewModel = mainViewModel)
@@ -65,7 +79,11 @@ fun NavigationManager() {
           SearchProfileScreen(navController , mainViewModel , it.arguments?.getString("documentId")!! , authViewModel = authViewModel)
         }
         composable(Screens.ProfileScreen.name) {
-            mainViewModel.getProfile()
+            GlobalScope.launch {
+
+                mainViewModel.getProfile()
+            }
+
             ProfileScreen(
                 navController = navController,
                 mainViewModel = mainViewModel,

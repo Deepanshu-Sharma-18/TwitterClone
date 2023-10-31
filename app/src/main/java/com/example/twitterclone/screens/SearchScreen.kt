@@ -50,7 +50,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
 import com.example.twitterclone.components.UserCard
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

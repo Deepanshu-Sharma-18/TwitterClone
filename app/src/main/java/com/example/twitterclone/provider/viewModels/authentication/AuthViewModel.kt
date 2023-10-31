@@ -1,4 +1,4 @@
-package com.example.twitterclone.provider.authentication
+package com.example.twitterclone.provider.viewModels.authentication
 
 import android.content.ContentValues
 import android.content.ContentValues.TAG

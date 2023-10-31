@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,13 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.MainViewModel
-import com.example.twitterclone.provider.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrendingScreen(mainViewModel: MainViewModel, navController: NavHostController , authvViewModel: AuthViewModel) {
+fun TrendingScreen(mainViewModel: MainViewModel, navController: NavHostController, authvViewModel: AuthViewModel) {
 
     val data by mainViewModel.getTrendingTweets().collectAsState(initial = null)
 

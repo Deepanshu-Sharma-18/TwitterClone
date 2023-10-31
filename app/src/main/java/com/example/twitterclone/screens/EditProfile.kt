@@ -35,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -61,9 +60,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -268,7 +269,10 @@ fun EditProfile(
                     Button(
                         onClick = {
                                   mainViewModel.updateProfile(name = name.value ,  url = mediaUri, bio =  bio.value)
-                            mainViewModel.getProfile()
+                            GlobalScope.launch {
+
+                                mainViewModel.getProfile()
+                            }
                             navController.popBackStack()
                         }, modifier = Modifier
                             .width(230.dp)

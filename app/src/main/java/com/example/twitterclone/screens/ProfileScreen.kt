@@ -51,11 +51,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.ui.theme.RalewayFontFamily
 import com.example.twitterclone.Navigation.Screens
-import okhttp3.internal.wait
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -77,7 +76,7 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
+            CircularProgressIndicator(modifier = Modifier.size(30.dp), color = MaterialTheme.colorScheme.primary)
         }
     } else {
 
@@ -350,8 +349,8 @@ fun ProfileScreen(
                                             .align(alignment = Alignment.TopEnd)
                                             .padding(horizontal = 5.dp , vertical = 25.dp)
                                             .clickable {
-                                                visible.value = false
                                                 mainViewModel.deleteTweet(id)
+                                                visible.value = false
                                             }
                                             .size(18.dp)
                                     )

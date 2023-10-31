@@ -48,8 +48,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.R
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.GlobalScope
@@ -143,7 +143,7 @@ fun RetweetCard(
                             val timestamp = listner!!["timestamp"] as Timestamp
                             val date = timestamp.toDate()
                             val currentDate = LocalDateTime.now()
-                            val targetDate = LocalDateTime.of(2023 , date.month , date.date , date.hours , date.minutes)
+                            val targetDate = LocalDateTime.of(2023 , date.month  + 1 , date.date , date.hours , date.minutes)
                             Log.d("DateTarget" , targetDate.toString())
                             Row(
                                 modifier = Modifier

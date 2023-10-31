@@ -64,8 +64,7 @@ import coil.compose.AsyncImage
 import com.example.twitterclone.components.VideoPlayer
 import com.example.twitterclone.components.isImageMimeType
 import com.example.twitterclone.components.isVideoMimeType
-import com.example.twitterclone.provider.MainViewModel
-import com.google.apphosting.datastore.testing.DatastoreTestTrace.FirestoreV1Action.CreateDocument
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -48,14 +48,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.twitterclone.components.TweetCard
-import com.example.twitterclone.provider.authentication.AuthViewModel
-import com.example.twitterclone.provider.MainViewModel
+import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
+import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.ui.theme.RalewayFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewModel, documentId: String ,authViewModel: AuthViewModel) {
+fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewModel, documentId: String, authViewModel: AuthViewModel) {
     val scrollState  = rememberScrollState()
     val data by mainViewModel.getUser(documentId).collectAsState(initial = null)
     val bool by mainViewModel.isFollowing(documentId).collectAsState(initial = null)
