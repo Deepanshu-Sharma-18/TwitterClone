@@ -283,7 +283,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         userRef.update(
             mutableMapOf(
                 "tweets" to tweetList,
-                "tweetCount" to initalValue - 1
+                "noOfTweets" to initalValue - 1
             )
         )
 

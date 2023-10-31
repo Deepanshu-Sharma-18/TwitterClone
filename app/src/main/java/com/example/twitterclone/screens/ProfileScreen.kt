@@ -34,6 +34,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -326,29 +328,38 @@ fun ProfileScreen(
                     val tweetList = data.value!!["tweets"] as List<String>
 
                     for (id in tweetList) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            
-                            TweetCard(
-                                id,
-                                navController = navController,
-                                mainViewModel = mainViewModel,
-                                authViewModel = authViewModel
-                            )
-                            if(mainViewModel.tweetCount > 0){
-                                Icon(
-                                    imageVector = Icons.Rounded.Delete, contentDescription = "delete" ,
-                                    modifier = Modifier
-                                        .align(alignment = Alignment.TopEnd)
-                                        .padding(horizontal = 5.dp , vertical = 25.dp)
-                                        .clickable {
-                                            mainViewModel.deleteTweet(id)
-                                        }
-                                        .size(18.dp)
+                        val visible = remember{
+                            mutableStateOf(true)
+                        }
+
+                        if(visible.value){
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+
+                                TweetCard(
+                                    id,
+                                    navController = navController,
+                                    mainViewModel = mainViewModel,
+                                    authViewModel = authViewModel
                                 )
+                                if(mainViewModel.tweetCount > 0){
+                                    Icon(
+                                        imageVector = Icons.Rounded.Delete, contentDescription = "delete" ,
+                                        modifier = Modifier
+                                            .align(alignment = Alignment.TopEnd)
+                                            .padding(horizontal = 5.dp , vertical = 25.dp)
+                                            .clickable {
+                                                visible.value = false
+                                                mainViewModel.deleteTweet(id)
+                                            }
+                                            .size(18.dp)
+                                    )
+                                }
                             }
                         }
+
+
                     }
                 }
             }
