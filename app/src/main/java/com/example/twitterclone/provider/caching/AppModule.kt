@@ -2,9 +2,9 @@ package com.example.twitterclone.provider.caching
 
 import android.content.Context
 import androidx.room.Room
-import com.example.twitterclone.caching.CacheDatabase
-import com.example.twitterclone.caching.CacheModule
-import com.example.twitterclone.caching.CacheUserModule
+import com.example.twitterclone.data.caching.CacheDatabase
+import com.example.twitterclone.data.caching.modules.CacheModule
+import com.example.twitterclone.data.caching.modules.CacheUserModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

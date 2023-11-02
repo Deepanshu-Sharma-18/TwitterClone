@@ -8,7 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.example.twitterclone.model.User
+import com.example.twitterclone.data.model.User
 import com.example.twitterclone.Navigation.Screens
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

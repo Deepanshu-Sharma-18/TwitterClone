@@ -1,13 +1,13 @@
 package com.example.twitterclone.provider
 
-import com.example.twitterclone.caching.CacheModel
-import com.example.twitterclone.caching.CacheModule
-import com.example.twitterclone.caching.CacheUserModel
-import com.example.twitterclone.caching.CacheUserModule
+import com.example.twitterclone.data.caching.models.CacheModel
+import com.example.twitterclone.data.caching.modules.CacheModule
+import com.example.twitterclone.data.caching.models.CacheUserModel
+import com.example.twitterclone.data.caching.modules.CacheUserModule
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class Repository @Inject constructor(private val cacheModule: CacheModule , private val cacheUserModule: CacheUserModule) {
+class Repository @Inject constructor(private val cacheModule: CacheModule, private val cacheUserModule: CacheUserModule) {
 
     suspend fun deleteCachedTweets() = cacheModule.deleteCachedTweets()
     fun getCachedTweets() : Flow<List<CacheModel>> = cacheModule.getCachedTweets()
