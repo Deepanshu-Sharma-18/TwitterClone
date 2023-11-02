@@ -1,6 +1,7 @@
 package com.example.twitterclone.screens.cacheScreen.components
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +56,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CacheTweetCard( tweet : CacheModel) {
 
@@ -231,14 +233,95 @@ fun CacheTweetCard( tweet : CacheModel) {
                         )
                         Spacer(modifier = Modifier.height(25.dp))
 
-                        if(tweet.url > 0){
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(350.dp)){
-                                Text(text = "Could Not Load Image" , style = TextStyle(
-                                    fontSize = 15.sp
-                                ), modifier = Modifier.align(Alignment.Center))
+                        val urls = tweet.url
+                            ?: emptyList()
+                        if (urls.isEmpty()) {
+                        } else {
+
+
+                            Log.d("IMAGEFEED" , urls.toList().toString())
+
+                            val mediaPager = rememberPagerState(initialPage = 0) {
+                                urls.size
                             }
+
+                            val currentPage by rememberUpdatedState(mediaPager.currentPage)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 30.dp,
+                                        end = 5.dp,
+                                        bottom = 0.dp
+                                    )
+                            ) {
+
+                                HorizontalPager(
+                                    state = mediaPager, pageSpacing = 10.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(
+                                            shape = RoundedCornerShape(
+                                                corner = CornerSize(
+                                                    10.dp
+                                                )
+                                            )
+                                        )
+                                ) { page ->
+                                    if (urls[page]["isImage"] == "true") {
+                                        AsyncImage(
+
+                                            model = urls[page]["link"],
+                                            contentDescription = "post-image",
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(end = 15.dp)
+                                                .clip(
+                                                    shape = RoundedCornerShape(
+                                                        corner = CornerSize(
+                                                            20.dp
+                                                        )
+                                                    )
+                                                ),
+                                            contentScale = ContentScale.FillWidth
+                                        )
+                                    } else {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(end = 15.dp)
+                                                .clip(
+                                                    shape = RoundedCornerShape(
+                                                        corner = CornerSize(
+                                                            20.dp
+                                                        )
+                                                    )
+                                                )
+                                        ) {
+                                            VideoPlayer(
+                                                uri = null,
+                                                link = urls[page]["link"].toString(),
+                                            )
+                                        }
+                                    }
+
+
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            if (urls.size > 0) {
+                                CircularPageIndicator(
+                                    numberOfPages = urls.size,
+                                    currentPage = currentPage,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
+                                )
+
+                            }
+
                         }
 
                         Spacer(modifier = Modifier.height(25.dp))

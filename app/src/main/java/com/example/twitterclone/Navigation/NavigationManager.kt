@@ -28,6 +28,7 @@ import com.example.twitterclone.screens.Authentication.ui.SignUp
 import com.example.twitterclone.screens.TrendingScreen
 import com.example.twitterclone.screens.TweetDetail
 import com.example.twitterclone.screens.cacheScreen.CacheScreen
+import com.example.twitterclone.screens.cacheScreen.CachedUserProfile
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -79,16 +80,22 @@ fun NavigationManager() {
           SearchProfileScreen(navController , mainViewModel , it.arguments?.getString("documentId")!! , authViewModel = authViewModel)
         }
         composable(Screens.ProfileScreen.name) {
-            GlobalScope.launch {
 
-                mainViewModel.getProfile()
+            if(mainViewModel.isInternetAvailable(context = LocalContext.current)){
+
+                GlobalScope.launch {
+
+                    mainViewModel.getProfile()
+                }
+
+                ProfileScreen(
+                    navController = navController,
+                    mainViewModel = mainViewModel,
+                    authViewModel = authViewModel
+                )
+            }else{
+                CachedUserProfile(mainViewModel = mainViewModel, navController = navController)
             }
-
-            ProfileScreen(
-                navController = navController,
-                mainViewModel = mainViewModel,
-                authViewModel = authViewModel
-            )
         }
         composable(
             Screens.TweetDetail.name + "/{documentId}",

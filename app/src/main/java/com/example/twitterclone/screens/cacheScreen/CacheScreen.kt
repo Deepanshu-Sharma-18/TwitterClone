@@ -56,10 +56,11 @@ import java.time.format.TextStyle
 @Composable
 fun CacheScreen(navController: NavController , mainViewModel: MainViewModel) {
     val data by mainViewModel.getCachedTweets().collectAsState(initial = null)
+    val profile by mainViewModel.getCachedUser().collectAsState(initial = null)
 
     val scrollState = rememberScrollState()
 
-    if(data == null){
+    if(data == null || profile == null){
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -83,23 +84,36 @@ fun CacheScreen(navController: NavController , mainViewModel: MainViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            IconButton(onClick = {  }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.profile),
-                                    contentDescription = "profile pic",
-                                    contentScale = ContentScale.Inside,
+                            IconButton(onClick = {
+                                navController.navigate(Screens.ProfileScreen.name)
+                            }) {
+                                AsyncImage(
+                                    model = profile!!.profilePic.toString(),
+                                    contentDescription = "profile image",
+                                    contentScale = ContentScale.FillWidth,
                                     modifier = Modifier
                                         .size(35.dp)
                                         .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                                 )
                             }
 
-                            Text(
-                                text = "Twitter",
-                                fontWeight = FontWeight.W600,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontSize = 16.sp
+//                            Text(
+//                                text = "Twitter",
+//                                fontWeight = FontWeight.W600,
+//                                color = MaterialTheme.colorScheme.onBackground,
+//                                fontSize = 16.sp
+//                            )
+
+                            AsyncImage(
+                                model = "https://cdn-icons-png.flaticon.com/512/733/733579.png?w=740&t=st=1688284770~exp=1688285370~hmac=4749b7d8b4f365320a235d7098ffbdd6ca7f5082d5f90d5d19940594a0bdc3f1",
+                                contentDescription = "image-twitter",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(30.dp)
+
                             )
+
+
                             IconButton(onClick = {
 
                             }) {

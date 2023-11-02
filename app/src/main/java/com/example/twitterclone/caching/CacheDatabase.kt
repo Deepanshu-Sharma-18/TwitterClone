@@ -4,14 +4,18 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import java.util.Date
 
 
-@Database(entities = [CacheModel::class] , version = 1)
-@TypeConverters(CacheDatabase::class)
+@Database(entities = [CacheModel::class , CacheUserModel::class] , version = 3 , exportSchema = false)
+@TypeConverters(CacheDatabase::class , MapListConverter::class)
 abstract class CacheDatabase : RoomDatabase() {
 
     abstract fun dao() : CacheModule
+
+    abstract fun daoUser() : CacheUserModule
 
     companion object{
         @TypeConverter
@@ -25,5 +29,7 @@ abstract class CacheDatabase : RoomDatabase() {
         fun dateToTimestamp(date: Date?): Long? {
             return if (date == null) null else date.getTime()
         }
+
+
     }
 }

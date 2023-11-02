@@ -73,19 +73,7 @@ fun TweetCard(
     val likes by mainViewModel.Likes(documentId = documentId).collectAsState(initial = null)
 
     if (listner == null || likes == null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .height(400.dp)
-                .background(color = MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(30.dp),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+
     } else {
         var exist = remember {
             mutableStateOf<String?>(null)
@@ -101,18 +89,7 @@ fun TweetCard(
             val data by mainViewModel.getUser(exist.value!!).collectAsState(initial = null)
 
             if (data == null) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(color = MaterialTheme.colorScheme.background),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(30.dp), color = MaterialTheme.colorScheme.primary
-                    )
-                }
+
             } else {
 
                 if (data == mutableMapOf<String, Any>("error" to "No User Found"))

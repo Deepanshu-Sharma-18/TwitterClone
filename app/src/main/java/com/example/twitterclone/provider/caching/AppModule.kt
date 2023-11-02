@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.twitterclone.caching.CacheDatabase
 import com.example.twitterclone.caching.CacheModule
+import com.example.twitterclone.caching.CacheUserModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +19,12 @@ object AppModule {
     @Provides
     fun cacheProvider (database: CacheDatabase) : CacheModule {
         return database.dao()
+    }
+
+    @Singleton
+    @Provides
+    fun cacheUserProvider (database: CacheDatabase) : CacheUserModule {
+        return database.daoUser()
     }
 
     @Singleton

@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -32,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -55,13 +61,19 @@ import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
 import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.Navigation.Screens
 import com.example.twitterclone.caching.CacheModel
+import com.example.twitterclone.caching.CacheUserModel
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
+import java.lang.Thread.sleep
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -81,9 +93,7 @@ fun HomeScreen(
     }
 
 
-    if(isLoading.value ){
 
-    }else {
 
         if (data.value == null) {
             Column(
@@ -99,6 +109,7 @@ fun HomeScreen(
             val following = mainViewModel.getFollowing()
                 .collectAsState(initial = null)
             val userData = mainViewModel.data
+
             Log.d("DATAPROFILEHome", "$userData")
             Scaffold(
                 topBar = {
@@ -253,22 +264,8 @@ fun HomeScreen(
                     val tweets by mainViewModel.getTweetsHomeScreen(following)
                         .collectAsState(initial = null)
 
-                    if (tweets == null) {
+                    if (tweets == null || isLoading.value) {
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = MaterialTheme.colorScheme.background),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(60.dp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-
-
-                        }
 
                         Log.d("TWEETSSTATUS" , tweets.toString())
                         Log.d("TWEETSSTATUS" , tweets?.documents.toString())
@@ -278,62 +275,109 @@ fun HomeScreen(
                         val tweetsCacheList = mutableListOf<CacheModel>()
 
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState)
-                                .background(color = MaterialTheme.colorScheme.background)
-                                .padding(top = 58.dp, start = 3.dp, bottom = 50.dp)
-                        ) {
+                        LaunchedEffect(key1 = Unit, block = {
+                            val listOfTweets = tweets!!
 
+                            synchronized(listOfTweets){
 
-                            for (tweet in tweets!!) {
-                                TweetCard(
-                                    documentId = tweet.id,
-                                    mainViewModel = mainViewModel,
-                                    navController = navController,
-                                    authViewModel = authViewModel
-                                )
-
-                                var tp = tweet.data!!["timestamp"] as Timestamp
-                                val date = tp.toDate()
-                                val list = tweet.data!!["url"] as List<Map<String, String>>
-                                val commentNo = tweet.data!!["commentNo"] as Long
-                                val likesCount = tweet.data!!["likesCount"] as Long
-                                tweetsCacheList.add(
-                                    CacheModel(
-                                        tweetId = tweet.data!!["tweetId"].toString(),
-                                        name = tweet.data!!["name"].toString(),
-                                        commentNo = commentNo.toInt() ,
-                                        content = tweet.data!!["content"].toString(),
-                                        likesCount = likesCount.toInt(),
-                                        retweeted = tweet.data!!["retweeted"].toString() == "true",
-                                        retweets = tweet.data!!["retweets"] as Long,
-                                        timestamp = date,
-                                        url = list.size,
-                                        userId = tweet.data!!["userId"].toString()
+                                for(tweet in listOfTweets){
+                                    var tp = tweet.data!!["timestamp"] as Timestamp
+                                    val date = tp.toDate()
+                                    val list = tweet.data!!["url"] as List<Map<String, String>>
+                                    val commentNo = tweet.data!!["commentNo"] as Long
+                                    val likesCount = tweet.data!!["likesCount"] as Long
+                                    tweetsCacheList.add(
+                                        CacheModel(
+                                            tweetId = tweet.data!!["tweetId"].toString(),
+                                            name = tweet.data!!["name"].toString(),
+                                            commentNo = commentNo.toInt() ,
+                                            content = tweet.data!!["content"].toString(),
+                                            likesCount = likesCount.toInt(),
+                                            retweeted = tweet.data!!["retweeted"].toString() == "true",
+                                            retweets = tweet.data!!["retweets"] as Long,
+                                            timestamp = date,
+                                            url = list,
+                                            userId = tweet.data!!["userId"].toString()
+                                        )
                                     )
-                                )
 
-                                Log.d("TWEETSCACHE" , tweetsCacheList.toList().toString())
-                                GlobalScope.launch {
+                                    Log.d("TWEETSCACHE" , tweetsCacheList.toList().toString())
+                                    GlobalScope.launch (Dispatchers.IO) {
 
-                                    mainViewModel.saveCacheTweets(tweetsCacheList)
+                                        mainViewModel.saveCacheTweets(tweetsCacheList)
+                                    }
                                 }
                             }
 
+                            val followersCache = userData!!.value!!["followers"] as Long
+                            val followingCache = userData!!.value!!["followers"] as Long
+
+                            val cacheUserModel = CacheUserModel(
+                                name = userData!!.value!!["name"].toString(),
+                                userId = userData!!.value!!["userId"].toString(),
+                                profilePic = userData!!.value!!["profilePic"].toString(),
+                                email = userData!!.value!!["email"].toString(),
+                                bio = userData!!.value!!["bio"].toString(),
+                                followers = followersCache.toInt(),
+                                following = followingCache.toInt(),
+                                noOfTweets = userData!!.value!!["noOfTweets"] as Long
+                            )
+
+                            GlobalScope.launch(Dispatchers.IO) {
+                                mainViewModel.insertCacheUser(
+                                    cacheUserModel
+                                )
+                            }
+                        })
+
+
+                        val pullRefreshState = rememberPullRefreshState(
+                            refreshing = isLoading.value,
+                            onRefresh = {
+                                isLoading.value = true
+                                mainViewModel.getTweetsHomeScreen(following)
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    sleep(3000L)
+                                }
+                                isLoading.value = false
+                            }
+                        )
+
+
+                        Box(modifier = Modifier.fillMaxWidth()){
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pullRefresh(pullRefreshState)
+                                    .verticalScroll(scrollState)
+                                    .background(color = MaterialTheme.colorScheme.background)
+                                    .padding(top = 58.dp, start = 3.dp, bottom = 50.dp)
+                            ) {
+
+
+                                for (tweet in tweets!!) {
+                                    TweetCard(
+                                        documentId = tweet.id,
+                                        mainViewModel = mainViewModel,
+                                        navController = navController,
+                                        authViewModel = authViewModel
+                                    )
+
+
+                                }
+                            }
+                                PullRefreshIndicator(
+                                    refreshing = isLoading.value,
+                                    state = pullRefreshState,
+                                    modifier = Modifier.align(Alignment.TopCenter),
+                                    contentColor = MaterialTheme.colorScheme.primary,
+                                    backgroundColor = MaterialTheme.colorScheme.onBackground,
+                                )
                         }
-
-
 
                     }
 
                 }
-
-
-
-
-            }
         }
     }
 }

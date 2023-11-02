@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings.Global
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.lifecycle.LiveData
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.twitterclone.caching.CacheModel
+import com.example.twitterclone.caching.CacheUserModel
 import com.example.twitterclone.model.CommentsModel
 import com.example.twitterclone.model.TweetModel
 import com.example.twitterclone.model.User
@@ -64,7 +66,6 @@ class MainViewModel @Inject constructor( private val repository: Repository) : V
                 tweetCount = data.value!!["noOfTweets"] as Long
                 Log.d("DATAPROFILE", "${it.data}")
                 Log.d("DATAPROFILE", "${tweetCount}")
-
             }
             .addOnFailureListener { exception ->
                 Log.d("DATAPROFILE", "Error getting documents.", exception)
@@ -72,6 +73,16 @@ class MainViewModel @Inject constructor( private val repository: Repository) : V
             }
             .await()
     }
+
+
+    fun getCachedUser() = repository.getCacheUser()
+
+    suspend fun insertCacheUser(cacheUserModel: CacheUserModel) {
+        repository.deleteCacheUser()
+        repository.insertCacheUser(cacheUserModel)
+    }
+
+
 
 
     fun isInternetAvailable(context: Context): Boolean {

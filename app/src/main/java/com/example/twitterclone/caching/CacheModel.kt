@@ -19,7 +19,7 @@ data class CacheModel(
     @ColumnInfo
     val timestamp : Date,
     @ColumnInfo
-    val url : Int,
+    val url : List<Map<String, String>>,
     @ColumnInfo
     val userId: String,
     @ColumnInfo
