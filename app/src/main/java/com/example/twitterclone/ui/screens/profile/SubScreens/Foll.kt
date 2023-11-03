@@ -1,4 +1,4 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.profile.SubScreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

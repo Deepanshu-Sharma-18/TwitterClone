@@ -325,10 +325,8 @@ class MainViewModel @Inject constructor( private val repository: Repository) : V
         )
 
         docRef.delete()
-        _data.value = null
+
     }
-
-
 
 
     suspend fun updateLike(documentId: String, initalValue: Long) {

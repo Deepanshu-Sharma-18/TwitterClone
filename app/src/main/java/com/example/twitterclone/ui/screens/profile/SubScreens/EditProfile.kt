@@ -1,4 +1,4 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.profile.SubScreens
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap

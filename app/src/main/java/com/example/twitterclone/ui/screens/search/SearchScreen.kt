@@ -1,4 +1,4 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.search
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -73,22 +73,22 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
             BottomAppBar(
                 contentPadding = PaddingValues(0.dp),
                 containerColor = MaterialTheme.colorScheme.background,
-                contentColor = Color(0xffAAB8C2),
+                contentColor = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(44.dp)
             ) {
 
                 Column(verticalArrangement = Arrangement.Top) {
                     Divider(
                         thickness = 0.4.dp,
-                        color =  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
                         modifier = Modifier.padding(horizontal = 1.dp)
                     )
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp, vertical = 13.dp),
+                            .padding(horizontal = 40.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -96,7 +96,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                             imageVector = ImageVector.vectorResource(id = R.drawable.home),
                             contentDescription = "home",
                             modifier = Modifier
-                                .size(23.dp)
+                                .size(20.dp)
                                 .clickable {
                                     navController.navigate(Screens.HomeScreen.name)
                                 },
@@ -106,22 +106,22 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
                             imageVector = ImageVector.vectorResource(id = R.drawable.search),
                             contentDescription = "search",
                             modifier = Modifier
-                                .size(23.dp)
+                                .size(20.dp)
                                 .clickable {
-                                    navController.navigate(Screens.SearchScreen.name)
+
                                 },
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.alert),
                             contentDescription = "notification",
-                            modifier = Modifier.size(23.dp),
+                            modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.messagehome),
                             contentDescription = "Mail",
-                            modifier = Modifier.size(23.dp),
+                            modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
@@ -129,6 +129,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navController: NavHostController)
 
                 }
             }
+
         }
     ) {
         Column(

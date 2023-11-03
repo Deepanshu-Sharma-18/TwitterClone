@@ -182,6 +182,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(44.dp)
+
                     ) {
 
                         Column(verticalArrangement = Arrangement.Top) {
@@ -203,7 +204,7 @@ fun HomeScreen(
                                     modifier = Modifier
                                         .size(20.dp)
                                         .clickable {
-                                            navController.navigate(Screens.HomeScreen.name)
+
                                         },
                                     tint = MaterialTheme.colorScheme.onBackground
                                 )
@@ -271,42 +272,68 @@ fun HomeScreen(
                     } else {
 
 
+                        val listOfTweets = tweets!!
                         val tweetsCacheList = mutableListOf<CacheModel>()
+
+                        for (tweet in listOfTweets) {
+                            var tp = tweet.data!!["timestamp"] as Timestamp
+                            val date = tp.toDate()
+                            val list = tweet.data!!["url"] as List<Map<String, String>>
+                            val commentNo = tweet.data!!["commentNo"] as Long
+                            val likesCount = tweet.data!!["likesCount"] as Long
+                            val cacheModel = CacheModel(
+                                tweetId = tweet.data!!["tweetId"].toString(),
+                                name = tweet.data!!["name"].toString(),
+                                commentNo = commentNo.toInt(),
+                                content = tweet.data!!["content"].toString(),
+                                likesCount = likesCount.toInt(),
+                                retweeted = tweet.data!!["retweeted"].toString() == "true",
+                                retweets = tweet.data!!["retweets"] as Long,
+                                timestamp = date,
+                                url = list,
+                                userId = tweet.data!!["userId"].toString()
+                            )
+                            tweetsCacheList.add(cacheModel)
+                        }
+
+                        GlobalScope.launch(Dispatchers.IO) {
+                            mainViewModel.saveCacheTweets(tweetsCacheList)
+                        }
 
 
                         LaunchedEffect(key1 = Unit, block = {
-                            val listOfTweets = tweets!!
-
-                            synchronized(listOfTweets){
-
-                                for(tweet in listOfTweets){
-                                    var tp = tweet.data!!["timestamp"] as Timestamp
-                                    val date = tp.toDate()
-                                    val list = tweet.data!!["url"] as List<Map<String, String>>
-                                    val commentNo = tweet.data!!["commentNo"] as Long
-                                    val likesCount = tweet.data!!["likesCount"] as Long
-                                    tweetsCacheList.add(
-                                        CacheModel(
-                                            tweetId = tweet.data!!["tweetId"].toString(),
-                                            name = tweet.data!!["name"].toString(),
-                                            commentNo = commentNo.toInt() ,
-                                            content = tweet.data!!["content"].toString(),
-                                            likesCount = likesCount.toInt(),
-                                            retweeted = tweet.data!!["retweeted"].toString() == "true",
-                                            retweets = tweet.data!!["retweets"] as Long,
-                                            timestamp = date,
-                                            url = list,
-                                            userId = tweet.data!!["userId"].toString()
-                                        )
-                                    )
-
-                                    Log.d("TWEETSCACHE" , tweetsCacheList.toList().toString())
-                                    GlobalScope.launch (Dispatchers.IO) {
-
-                                        mainViewModel.saveCacheTweets(tweetsCacheList)
-                                    }
-                                }
-                            }
+//                            val listOfTweets = tweets!!
+//
+//                            synchronized(listOfTweets){
+//
+//                                for(tweet in listOfTweets){
+//                                    var tp = tweet.data!!["timestamp"] as Timestamp
+//                                    val date = tp.toDate()
+//                                    val list = tweet.data!!["url"] as List<Map<String, String>>
+//                                    val commentNo = tweet.data!!["commentNo"] as Long
+//                                    val likesCount = tweet.data!!["likesCount"] as Long
+//                                    tweetsCacheList.add(
+//                                        CacheModel(
+//                                            tweetId = tweet.data!!["tweetId"].toString(),
+//                                            name = tweet.data!!["name"].toString(),
+//                                            commentNo = commentNo.toInt() ,
+//                                            content = tweet.data!!["content"].toString(),
+//                                            likesCount = likesCount.toInt(),
+//                                            retweeted = tweet.data!!["retweeted"].toString() == "true",
+//                                            retweets = tweet.data!!["retweets"] as Long,
+//                                            timestamp = date,
+//                                            url = list,
+//                                            userId = tweet.data!!["userId"].toString()
+//                                        )
+//                                    )
+//
+//                                    Log.d("TWEETSCACHE" , tweetsCacheList.toList().toString())
+//                                    GlobalScope.launch (Dispatchers.IO) {
+//
+//                                        mainViewModel.saveCacheTweets(tweetsCacheList)
+//                                    }
+//                                }
+//                            }
 
                             val followersCache = userData!!.value!!["followers"] as Long
                             val followingCache = userData!!.value!!["followers"] as Long
@@ -333,12 +360,11 @@ fun HomeScreen(
                         val pullRefreshState = rememberPullRefreshState(
                             refreshing = isLoading.value,
                             onRefresh = {
-                                isLoading.value = true
-                                mainViewModel.getTweetsHomeScreen(following)
                                 GlobalScope.launch(Dispatchers.Main) {
-                                    sleep(3000L)
+                                    isLoading.value = true
+                                    mainViewModel.getTweetsHomeScreen(following)
+                                    isLoading.value = false
                                 }
-                                isLoading.value = false
                             }
                         )
 
@@ -362,7 +388,6 @@ fun HomeScreen(
                                         authViewModel = authViewModel
                                     )
 
-
                                 }
                             }
                                 PullRefreshIndicator(
@@ -370,7 +395,7 @@ fun HomeScreen(
                                     state = pullRefreshState,
                                     modifier = Modifier.align(Alignment.TopCenter),
                                     contentColor = MaterialTheme.colorScheme.primary,
-                                    backgroundColor = MaterialTheme.colorScheme.onBackground,
+                                    backgroundColor = MaterialTheme.colorScheme.background,
                                 )
                         }
 

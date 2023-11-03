@@ -1,8 +1,8 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.profile
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,24 +20,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -46,22 +46,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.twitterclone.ui.components.TweetCard
 import com.example.twitterclone.provider.viewModels.authentication.AuthViewModel
 import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
 import com.example.twitterclone.ui.theme.RalewayFontFamily
+import com.example.twitterclone.Navigation.Screens
 
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewModel, documentId: String, authViewModel: AuthViewModel) {
-    val scrollState  = rememberScrollState()
-    val data by mainViewModel.getUser(documentId).collectAsState(initial = null)
-    val bool by mainViewModel.isFollowing(documentId).collectAsState(initial = null)
-    Log.d("isfollowing" , "${bool}")
+fun ProfileScreen(
+    authViewModel: AuthViewModel,
+    mainViewModel: MainViewModel,
+    navController: NavController
+) {
+    val scrollState = rememberScrollState()
+    val data by mainViewModel.data.observeAsState(initial = null)
 
-    if (data == null || bool == null) {
+    if (data == null || data!!["profilePic"] == null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,9 +74,9 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(60.dp), color = MaterialTheme.colorScheme.primary)
+            CircularProgressIndicator(modifier = Modifier.size(30.dp), color = MaterialTheme.colorScheme.primary)
         }
-    }else{
+    } else {
 
         Scaffold(modifier = Modifier.fillMaxSize()) {
 
@@ -84,11 +89,12 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                 horizontalAlignment = Alignment.Start
             ) {
 
-                ConstraintLayout(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
                 ) {
-                    val ( image,topPart,edit ) = createRefs()
+                    val (image, edit, topPart) = createRefs()
 
                     Box(modifier = Modifier
                         .fillMaxWidth()
@@ -103,65 +109,97 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
 
                         Row(
                             modifier = Modifier
-                                .padding(horizontal = 20.dp, vertical = 30.dp)
-                            ,
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            IconButton(
-                                onClick = {
-                                    navController.popBackStack()
-                                }, modifier = Modifier
-                                    .size(30.dp)
+                            Card(
+                                Modifier
+                                    .size(35.dp)
                                     .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
-                                    .background(color = MaterialTheme.colorScheme.primary),
-
-                                ) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "back",
-                                    modifier = Modifier.fillMaxSize(),
-                                    tint = MaterialTheme.colorScheme.background
-                                )
+                                    .background(color = MaterialTheme.colorScheme.primary)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    }) {
+                                Column (modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = MaterialTheme.colorScheme.primary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "back",
+                                        modifier = Modifier.size(25.dp),
+                                        tint = MaterialTheme.colorScheme.background
+                                    )
+                                }
                             }
 
+                            Card(
+                                Modifier
+                                    .size(35.dp)
+                                    .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
+                                    .background(color = MaterialTheme.colorScheme.primary)
+                                    .clickable {
+                                        mainViewModel.auth
+                                            .signOut()
 
+                                        val navOptions = NavOptions
+                                            .Builder()
+                                            .setPopUpTo(
+                                                navController.graph.startDestinationRoute,
+                                                inclusive = false
+                                            )
+                                            .build()
+                                        navController.navigate(Screens.SignIN.name, navOptions)
+                                    }) {
+                                Column (modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = MaterialTheme.colorScheme.primary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                                    Icon(
+                                        imageVector = Icons.Default.ExitToApp,
+                                        contentDescription = "back",
+                                        modifier = Modifier.size(25.dp),
+                                        tint = MaterialTheme.colorScheme.background
+                                    )
+                                }
+                            }
                         }
                     }
 
-                    Box(modifier = Modifier.constrainAs(image){
-                        top.linkTo(parent.top,100.dp)
-                        start.linkTo(parent.start,30.dp)
+                    Box(modifier = Modifier.constrainAs(image) {
+                        top.linkTo(parent.top, 100.dp)
+                        start.linkTo(parent.start, 30.dp)
                         bottom.linkTo(parent.bottom, (10).dp)
                     }) {
                         AsyncImage(
                             model = data!!["profilePic"],
                             contentDescription = "profile pic",
-                            contentScale = ContentScale.FillWidth,
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(shape = RoundedCornerShape(corner = CornerSize(50)))
                         )
                     }
 
-                    Box(modifier = Modifier.constrainAs(edit){
-                        top.linkTo(parent.top,160.dp)
+
+                    Box(modifier = Modifier.constrainAs(edit) {
+                        top.linkTo(parent.top, 160.dp)
                         end.linkTo(parent.end, (30).dp)
                         bottom.linkTo(parent.bottom, (0).dp)
                     }) {
                         OutlinedButton(
                             onClick = {
-                                    mainViewModel.follow(documentId , data!!["followers"] as Long, documentId = documentId, userId = data!!["userId"].toString())
+                                navController.navigate(Screens.EditProfile.name)
                             },
-                            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colorScheme.background)
                                 .width(130.dp)
                                 .height(34.dp)
                         ) {
-
                             Text(
-                                text = if(bool!!.data == null) "Follow" else "Unfollow",
+                                text = "Edit profile",
                                 fontWeight = FontWeight.W500,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 12.sp
                             )
                         }
                     }
@@ -171,7 +209,7 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(15.dp),
+                        .padding(horizontal = 15.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -213,13 +251,13 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                     )
                     Spacer(modifier = Modifier.height(30.dp))
 
-                        Text(
-                            text = "${data!!["bio"]}",
-                            fontWeight = FontWeight.W400,
-                            color = MaterialTheme.colorScheme.secondary,
-                            fontFamily = RalewayFontFamily,
-                            fontSize = 15.sp
-                        )
+                    Text(
+                        text = "${data!!["bio"]}",
+                        fontWeight = FontWeight.W400,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontFamily = RalewayFontFamily,
+                        fontSize = 16.sp
+                    )
 
                     Spacer(modifier = Modifier.height(15.dp))
                     Row(
@@ -227,11 +265,11 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        Spacer(modifier = Modifier.width(15.dp))
+                        Spacer(modifier = Modifier.width(0.dp))
                         Text(text = buildAnnotatedString {
                             withStyle(
                                 SpanStyle(
-                                    fontSize = 16.sp,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
@@ -242,32 +280,36 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
                                     color = MaterialTheme.colorScheme.secondary,
-                                    fontSize = 15.sp
+                                    fontSize = 17.sp
                                 )
                             ) {
                                 append(" Following")
                             }
+                        }, modifier = Modifier.clickable {
+                            navController.navigate(Screens.Following.name)
                         })
                         Spacer(modifier = Modifier.width(15.dp))
                         Text(text = buildAnnotatedString {
                             withStyle(
                                 SpanStyle(
-                                    fontSize = 16.sp,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                             ) {
-                                append("${data!!["followers"]}")
+                                append("0")
                             }
                             withStyle(
                                 SpanStyle(
                                     fontWeight = FontWeight.W400,
                                     color = MaterialTheme.colorScheme.secondary,
-                                    fontSize = 15.sp
+                                    fontSize = 17.sp
                                 )
                             ) {
                                 append(" Followers")
                             }
+                        },Modifier.clickable {
+                            navController.navigate(Screens.Followers.name)
                         })
                     }
                     Spacer(modifier = Modifier.height(25.dp))
@@ -280,14 +322,19 @@ fun SearchProfileScreen(navController: NavController, mainViewModel: MainViewMod
                     )
                     Spacer(modifier = Modifier.height(7.dp))
 
-                    for (i in 1..data!!["noOfTweets"] as Long){
-                        TweetCard("${documentId}$i",navController = navController, mainViewModel = mainViewModel, authViewModel = authViewModel )
+                    val tweetList = data!!["tweets"] as List<String>
+
+                    for (id in tweetList) {
+                                TweetCard(
+                                    id,
+                                    navController = navController,
+                                    mainViewModel = mainViewModel,
+                                    authViewModel = authViewModel,
+                                    isProfileScreen = true
+                                )
                     }
                 }
             }
         }
     }
 }
-
-
-

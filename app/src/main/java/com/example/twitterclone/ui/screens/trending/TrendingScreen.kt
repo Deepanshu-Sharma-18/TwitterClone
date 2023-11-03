@@ -1,4 +1,4 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.trending
 
 import android.annotation.SuppressLint
 import android.util.Log

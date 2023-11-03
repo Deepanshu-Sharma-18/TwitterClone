@@ -19,6 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -33,6 +37,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,17 +54,25 @@ import coil.compose.AsyncImage
 import com.example.twitterclone.Navigation.Screens
 import com.example.twitterclone.R
 import com.example.twitterclone.provider.viewModels.appViewModel.MainViewModel
+import com.example.twitterclone.ui.components.TweetCard
 import com.example.twitterclone.ui.screens.cacheScreen.components.CacheTweetCard
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.format.TextStyle
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CacheScreen(navController: NavController , mainViewModel: MainViewModel) {
     val data by mainViewModel.getCachedTweets().collectAsState(initial = null)
     val profile by mainViewModel.getCachedUser().collectAsState(initial = null)
 
     val scrollState = rememberScrollState()
+
+    val isLoading = remember {
+        mutableStateOf(false)
+    }
 
     if(data == null || profile == null){
         Column(
@@ -212,23 +226,45 @@ fun CacheScreen(navController: NavController , mainViewModel: MainViewModel) {
             floatingActionButtonPosition = FabPosition.Center
         ){
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(top = 58.dp, start = 3.dp, bottom = 50.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ){
-                
-                for(tweet in data!!){
-                    CacheTweetCard(tweet = tweet)
+
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = isLoading.value,
+                onRefresh = {
+
+                        isLoading.value = true
+                        navController.navigate(Screens.HomeScreen.name)
+                        isLoading.value = false
+
                 }
+            )
 
 
+            Box(modifier = Modifier.fillMaxWidth()){
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState)
+                        .verticalScroll(scrollState)
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(top = 58.dp, start = 3.dp, bottom = 50.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
+                ){
 
+                    for(tweet in data!!){
+                        CacheTweetCard(tweet = tweet)
+                    }
+                }
+                PullRefreshIndicator(
+                    refreshing = isLoading.value,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    contentColor = MaterialTheme.colorScheme.primary,
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                )
             }
+
+
 
         }
     }

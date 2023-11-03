@@ -1,4 +1,4 @@
-package com.example.twitterclone.ui.screens
+package com.example.twitterclone.ui.screens.tweetDetail
 
 import android.annotation.SuppressLint
 import android.util.Log
