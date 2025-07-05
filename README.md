@@ -121,7 +121,4 @@ For bug reports and feature requests, please open an issue on the GitHub reposit
 
 This project is distributed under the [MIT License](LICENSE) (Replace with the actual License).
 
-## Contact
-
-For questions, feedback, or contributions, please contact:
 
